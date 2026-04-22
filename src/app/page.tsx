@@ -1,196 +1,337 @@
-import Link from 'next/link';
-import Image from 'next/image';
 import { wooCommerce } from '@/lib/woocommerce';
-import { ProductGrid } from '@/components/product/product-grid';
 import { HeroSlider } from '@/components/home/hero-slider';
-import { Button } from '@/components/ui/button';
-import type { WCCategory } from '@/types/woocommerce';
+import { Marquee } from '@/components/home/marquee';
+import { CategoryShowcase } from '@/components/home/category-showcase';
+import { OccasionsGrid } from '@/components/home/occasions-grid';
+import { Bestsellers } from '@/components/home/bestsellers';
+import { DiasporaSection } from '@/components/home/diaspora-section';
+import { GiftLabSection } from '@/components/home/giftlab-section';
+import { TrustBar } from '@/components/home/trust-bar';
+import { ProductCarousel } from '@/components/home/product-carousel';
+import { TopSaleSection } from '@/components/home/top-sale-section';
+import { ImageBannerWall } from '@/components/home/image-banner-wall';
+import { getPageBySlug } from '@/lib/graphql';
+import { getHomepageSettings } from '@/lib/homepage-settings';
+import { readDb } from '@/lib/db';
 
-// Define which category slugs to show on homepage
-const FEATURED_CATEGORY_SLUGS = ['women', 'men', 'accessories'];
+type HeroSlide = {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  primaryCta: { label: string; href: string };
+  backgroundImage?: { src: string; alt?: string };
+};
+
+type HomeImageBanner = {
+  id: string;
+  title: string;
+  subtitle?: string;
+  badge?: string;
+  imageUrl: string;
+  mobileImageUrl?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  style?: 'full' | 'card' | 'split';
+  textAlign?: 'left' | 'center';
+  overlayOpacity?: number;
+  isActive?: boolean;
+  sortOrder?: number;
+};
 
 export default async function HomePage() {
-  // Fetch featured/new products and categories
+  const siteSettings = readDb<{
+    homeLinks?: {
+      shopAllLink?: string;
+      saleLink?: string;
+      sendToPakistanLink?: string;
+      bestsellersLink?: string;
+      categoryLinkTemplate?: string;
+      occasionLinkTemplate?: string;
+    };
+  }>('site-settings')[0] || {};
+  const homeLinks = siteSettings.homeLinks || {};
+
   let featuredProducts: Awaited<ReturnType<typeof wooCommerce.products.list>> = [];
-  let newProducts: Awaited<ReturnType<typeof wooCommerce.products.list>> = [];
-  let categories: WCCategory[] = [];
+  let newArrivals: Awaited<ReturnType<typeof wooCommerce.products.list>> = [];
+  let topCategories: Awaited<ReturnType<typeof wooCommerce.categories.list>> = [];
 
   try {
-    [featuredProducts, newProducts, categories] = await Promise.all([
-      wooCommerce.products.list({ featured: true, per_page: 4 }),
-      wooCommerce.products.list({ orderby: 'date', order: 'desc', per_page: 8 }),
-      wooCommerce.categories.list({ per_page: 100, hide_empty: false }),
-    ]);
+    featuredProducts = await wooCommerce.products.list({ featured: true, per_page: 12 });
+    newArrivals = await wooCommerce.products.list({
+      orderby: 'date',
+      order: 'desc',
+      per_page: 12,
+      status: 'publish',
+    });
+
+    const allCategories = await wooCommerce.categories.list({ per_page: 100, hide_empty: false });
+    topCategories = allCategories.filter((c) => c.parent === 0);
   } catch (error) {
-    console.error('Failed to fetch data:', error);
+    console.error('Failed to fetch products:', error);
   }
 
-  // Filter and order categories based on FEATURED_CATEGORY_SLUGS
-  const featuredCategories = FEATURED_CATEGORY_SLUGS
-    .map(slug => categories.find(cat => cat.slug === slug))
-    .filter((cat): cat is WCCategory => cat !== undefined);
+  const stripHtml = (html: string) => {
+    const text = (html || '')
+      .replace(/<\/p>/gi, '\n')
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/[ \t]+/g, ' ')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+    return text;
+  };
+
+  const parseCta = (content: string): { label?: string; href?: string } => {
+    const text = stripHtml(content || '');
+    const match = text.match(/CTA:\s*(.*?)\s*\|\s*([^\n]+)/i);
+    if (!match) return {};
+    return { label: match[1]?.trim(), href: match[2]?.trim() };
+  };
+
+  const lines = (content: string) =>
+    stripHtml(content || '')
+      .split('\n')
+      .map((l) => l.trim())
+      .filter(Boolean);
+
+  const parseHeroFromWpPage = (
+    page: Awaited<ReturnType<typeof getPageBySlug>>,
+    fallback: { eyebrow: string; title: string; subtitle: string; primaryCta: { label: string; href: string } }
+  ): HeroSlide | null => {
+    if (!page) return null;
+
+    const ln = lines(page.content || '');
+    const eyebrow = ln[0] || fallback.eyebrow;
+    const subtitle = ln[1] || fallback.subtitle;
+    const cta = parseCta(page.content || '');
+
+    return {
+      eyebrow,
+      title: page.title || fallback.title,
+      subtitle,
+      primaryCta: {
+        label: cta.label || fallback.primaryCta.label,
+        href: cta.href || fallback.primaryCta.href,
+      },
+      backgroundImage: page.featuredImage?.node?.sourceUrl
+        ? { src: page.featuredImage.node.sourceUrl, alt: page.title }
+        : undefined,
+    };
+  };
+
+  const findSlugByKeywords = (keywords: string[]) => {
+    const match = topCategories.find((c) =>
+      keywords.some((k) => c.name.toLowerCase().includes(k.toLowerCase()))
+    );
+    return match?.slug;
+  };
+
+  const giftsSlug = findSlugByKeywords(['gifts', 'hampers', 'gift']);
+
+  const bg1 = newArrivals?.[0]?.images?.[0]?.src;
+  const bg2 = featuredProducts?.[0]?.images?.[0]?.src;
+  const bg3 = featuredProducts?.[1]?.images?.[0]?.src;
+
+  const fallbackSlides: HeroSlide[] = [
+    {
+      eyebrow: 'New Arrivals',
+      title: 'Fresh Gift Drops',
+      subtitle: 'New season picks curated for fast ordering and premium delivery.',
+      primaryCta: { label: 'Shop New In', href: homeLinks.shopAllLink || '/shop?sort=newest' },
+      backgroundImage: bg1 ? { src: bg1, alt: 'New arrivals background' } : undefined,
+    },
+    {
+      eyebrow: 'Gifts & Hampers',
+      title: 'Ready-to-Gift Collections',
+      subtitle: 'Beautiful bundles for every occasion—send love home in minutes.',
+      primaryCta: {
+        label: 'Explore Hampers',
+        href: giftsSlug
+          ? (homeLinks.categoryLinkTemplate || '/shop?category={slug}').replace('{slug}', encodeURIComponent(giftsSlug))
+          : homeLinks.shopAllLink || '/shop',
+      },
+      backgroundImage: bg2 ? { src: bg2, alt: 'Gifts background' } : undefined,
+    },
+    {
+      eyebrow: 'Bestsellers',
+      title: 'Most Loved by Customers',
+      subtitle: 'Top picks that sell out—discover your next favorite gift.',
+      primaryCta: { label: 'Shop Bestsellers', href: homeLinks.bestsellersLink || '/shop?best_sellers=true' },
+      backgroundImage: bg3 ? { src: bg3, alt: 'Bestsellers background' } : undefined,
+    },
+  ];
+
+  // Home page banners (admin editable via WordPress pages):
+  // - Create WP pages with slugs: home-banner-1, home-banner-2, home-banner-3
+  // - Featured image is used as the slide background
+  // - Page content convention (stripped text):
+  //    line1 => eyebrow
+  //    line2 => subtitle
+  //    anywhere: "CTA: <label> | <href>"
+  const [banner1, banner2, banner3, dashboardSettings] = await Promise.all([
+    getPageBySlug('home-banner-1'),
+    getPageBySlug('home-banner-2'),
+    getPageBySlug('home-banner-3'),
+    getHomepageSettings(),
+  ]);
+
+  const slides: HeroSlide[] = [
+    parseHeroFromWpPage(banner1, fallbackSlides[0]),
+    parseHeroFromWpPage(banner2, fallbackSlides[1]),
+    parseHeroFromWpPage(banner3, fallbackSlides[2]),
+  ].filter((s): s is HeroSlide => Boolean(s));
+
+  const safeSlides = slides.length === 3 ? slides : fallbackSlides;
+
+  const dashboardSlides = (dashboardSettings?.heroSlides || [])
+    .slice(0, 3)
+    .map((s, idx): HeroSlide => ({
+      eyebrow: s.eyebrow || fallbackSlides[idx]?.eyebrow || 'Featured',
+      title: s.title || fallbackSlides[idx]?.title || 'Featured Collection',
+      subtitle: s.subtitle || fallbackSlides[idx]?.subtitle || '',
+      primaryCta: {
+        label: s.ctaLabel || fallbackSlides[idx]?.primaryCta.label || 'Shop now',
+        href: s.ctaHref || fallbackSlides[idx]?.primaryCta.href || '/shop',
+      },
+      backgroundImage: s.imageUrl
+        ? { src: s.imageUrl, alt: s.imageAlt || s.title || 'Hero slide' }
+        : fallbackSlides[idx]?.backgroundImage,
+    }));
+
+  const finalSlides =
+    dashboardSlides.length === 3 && dashboardSlides.every((s) => s.title)
+      ? dashboardSlides
+      : safeSlides;
+
+  const adminBanners = readDb<{
+    type?: string;
+    title?: string;
+    subtitle?: string;
+    ctaText?: string;
+    ctaLink?: string;
+    imageUrl?: string;
+    imageOnly?: boolean;
+    objectFit?: 'cover' | 'contain';
+    objectPosition?: string;
+    overlayOpacity?: number;
+    isActive?: boolean;
+    sortOrder?: number;
+  }>('banners')
+    .filter((b) => b.type === 'hero' && b.isActive)
+    .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+    .slice(0, 3)
+    .map((b) => ({
+      eyebrow: 'Featured',
+      title: b.imageOnly ? '' : b.title || 'Featured Collection',
+      subtitle: b.imageOnly ? '' : b.subtitle || '',
+      primaryCta: { label: b.ctaText || 'Shop now', href: b.ctaLink || '/shop' },
+      backgroundImage: b.imageUrl ? { src: b.imageUrl, alt: b.title || 'Hero banner' } : undefined,
+      imageOnly: Boolean(b.imageOnly),
+      objectFit: b.objectFit || 'cover',
+      objectPosition: b.objectPosition || 'center',
+      overlayOpacity: typeof b.overlayOpacity === 'number' ? b.overlayOpacity : 12,
+    }));
+
+  const finalSlidesWithAdmin = adminBanners.length ? adminBanners : finalSlides;
+  const homeImageBanners = readDb<HomeImageBanner>('home-image-banners');
+  const normalizedOccasionCards = (dashboardSettings?.occasionsGrid || []).map((item) => {
+    const derivedSlug = String(item?.name || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '')
+    const linkTemplate = homeLinks.occasionLinkTemplate || '/occasions?occasion={slug}'
+    return {
+      ...item,
+      href: linkTemplate.replace('{slug}', encodeURIComponent(derivedSlug)),
+    }
+  })
+
+  // Top sale section (admin editable via WP page: home-top-sale)
+  const topSalePage = await getPageBySlug('home-top-sale');
+  const topSaleLines = lines(topSalePage?.content || '');
+  const topSaleSubtitle = topSaleLines[0] || undefined;
+
+  const productSlugsText =
+    topSaleLines.find((l) => /^products\\s*:/i.test(l)) ||
+    topSaleLines.find((l) => /^product-slugs\\s*:/i.test(l)) ||
+    '';
+
+  const productSlugs = productSlugsText
+    .replace(/^products\\s*:/i, '')
+    .replace(/^product-slugs\\s*:/i, '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  let topSaleProducts: typeof featuredProducts = [];
+  const topSaleSlugOverride = dashboardSettings?.topSaleProductSlugs || [];
+
+  if (topSaleSlugOverride.length) {
+    const resolved = await Promise.all(
+      topSaleSlugOverride.map(async (slug) => wooCommerce.products.getBySlug(slug))
+    );
+    topSaleProducts = resolved.filter(
+      (p): p is (typeof featuredProducts)[number] => Boolean(p)
+    );
+  } else if (productSlugs.length) {
+    const resolved = await Promise.all(productSlugs.map(async (slug) => wooCommerce.products.getBySlug(slug)));
+    topSaleProducts = resolved.filter(
+      (p): p is (typeof featuredProducts)[number] => Boolean(p)
+    );
+  }
+
+  if (!topSaleProducts.length) {
+    topSaleProducts = await wooCommerce.products.list({
+      on_sale: true,
+      per_page: 8,
+      orderby: 'date',
+      order: 'desc',
+      status: 'publish',
+    });
+  }
 
   return (
-    <div className="animate-fadeIn">
-      {/* Hero Slider */}
-      <HeroSlider />
+    <>
+      <HeroSlider
+        slides={finalSlidesWithAdmin}
+        promoItems={dashboardSettings?.promoStripItems}
+        secondaryCtaHref={homeLinks.sendToPakistanLink || '/send-to-pakistan'}
+        secondaryCtaLabel="Send to Pakistan"
+      />
+      <ImageBannerWall banners={homeImageBanners} />
+      <Marquee items={dashboardSettings?.marqueeItems} />
 
-      {/* Categories Grid */}
-      {featuredCategories.length > 0 && (
-        <section className="py-16">
-          <div className="mx-auto max-w-7xl px-4 lg:px-8">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {featuredCategories.map((category, index) => (
-                <Link
-                  key={category.id}
-                  href={`/shop/${category.slug}`}
-                  className={`group relative aspect-[3/4] overflow-hidden bg-gray-100 ${
-                    index === featuredCategories.length - 1 && featuredCategories.length === 3
-                      ? 'md:col-span-2 lg:col-span-1'
-                      : ''
-                  }`}
-                >
-                  {category.image?.src && (
-                    <Image
-                      src={category.image.src}
-                      alt={category.image.alt || category.name}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-0 left-0 p-6">
-                    <h3 className="font-heading text-2xl font-normal text-white">{category.name}</h3>
-                    <span className="mt-2 inline-block text-sm text-white/80 group-hover:underline">
-                      Shop now
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      <ProductCarousel
+        title={dashboardSettings?.newInTitle || 'New In'}
+        subtitle={dashboardSettings?.newInSubtitle || 'Latest Arrivals'}
+        products={newArrivals}
+      />
 
-      {/* Featured Products */}
-      {featuredProducts.length > 0 && (
-        <section className="py-16">
-          <div className="mx-auto max-w-7xl px-4 lg:px-8">
-            <div className="flex items-center justify-between">
-              <h2 className="font-heading text-2xl font-medium">Featured</h2>
-              <Link href="/shop?featured=true" className="text-sm hover:underline">
-                View all
-              </Link>
-            </div>
-            <div className="mt-8">
-              <ProductGrid products={featuredProducts} columns={4} />
-            </div>
-          </div>
-        </section>
-      )}
+      <TopSaleSection
+        heading={dashboardSettings?.topSaleHeading || topSalePage?.title || 'Limited Deals'}
+        subtitle={dashboardSettings?.topSaleSubtitle || topSaleSubtitle}
+        products={topSaleProducts}
+        saleHref={homeLinks.saleLink || '/shop?on_sale=true'}
+      />
 
-      {/* Banner */}
-      <section className="bg-black py-16 text-white">
-        <div className="mx-auto max-w-7xl px-4 text-center lg:px-8">
-          <p className="text-sm font-medium uppercase tracking-wider text-gray-400">
-            Limited Time
-          </p>
-          <h2 className="mt-4 font-heading text-3xl font-medium md:text-4xl">
-            Free Shipping on Orders Over $100
-          </h2>
-          <p className="mt-4 text-gray-400">
-            Use code FREESHIP at checkout
-          </p>
-          <Link href="/shop">
-            <Button variant="outline" className="mt-8 border-white text-white hover:bg-white hover:text-black">
-              Shop Now
-            </Button>
-          </Link>
-        </div>
-      </section>
-
-      {/* New Arrivals */}
-      {newProducts.length > 0 && (
-        <section className="py-16">
-          <div className="mx-auto max-w-7xl px-4 lg:px-8">
-            <div className="flex items-center justify-between">
-              <h2 className="font-heading text-2xl font-medium">New Arrivals</h2>
-              <Link href="/shop?orderby=date" className="text-sm hover:underline">
-                View all
-              </Link>
-            </div>
-            <div className="mt-8">
-              <ProductGrid products={newProducts} columns={4} />
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Features */}
-      <section className="border-t py-16">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="grid gap-8 md:grid-cols-3">
-            <div className="text-center">
-              <svg
-                className="mx-auto h-8 w-8"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"
-                />
-              </svg>
-              <h3 className="mt-4 font-heading font-medium">Free Shipping</h3>
-              <p className="mt-2 text-sm text-gray-500">
-                On all orders over $100
-              </p>
-            </div>
-            <div className="text-center">
-              <svg
-                className="mx-auto h-8 w-8"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
-                />
-              </svg>
-              <h3 className="mt-4 font-heading font-medium">Easy Returns</h3>
-              <p className="mt-2 text-sm text-gray-500">
-                30-day return policy
-              </p>
-            </div>
-            <div className="text-center">
-              <svg
-                className="mx-auto h-8 w-8"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"
-                />
-              </svg>
-              <h3 className="mt-4 font-heading font-medium">Secure Payment</h3>
-              <p className="mt-2 text-sm text-gray-500">
-                100% secure checkout
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
+      <CategoryShowcase categoryLinkTemplate={homeLinks.categoryLinkTemplate || '/shop?category={slug}'} />
+      <OccasionsGrid occasions={normalizedOccasionCards} occasionLinkTemplate={homeLinks.occasionLinkTemplate || '/occasions?occasion={slug}'} />
+      <Bestsellers products={featuredProducts} />
+      <DiasporaSection
+        eyebrow={dashboardSettings?.diaspora?.eyebrow}
+        title={dashboardSettings?.diaspora?.title}
+        body={dashboardSettings?.diaspora?.body}
+        ctaLabel={dashboardSettings?.diaspora?.ctaLabel}
+        ctaHref={dashboardSettings?.diaspora?.ctaHref}
+      />
+      <GiftLabSection
+        eyebrow={dashboardSettings?.giftlab?.eyebrow}
+        title={dashboardSettings?.giftlab?.title}
+        description={dashboardSettings?.giftlab?.description}
+        ctaLabel={dashboardSettings?.giftlab?.ctaLabel}
+        ctaHref={dashboardSettings?.giftlab?.ctaHref}
+      />
+      <TrustBar items={dashboardSettings?.trustBarItems} />
+    </>
   );
 }

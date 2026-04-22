@@ -141,12 +141,12 @@ export default function AddressesPage() {
   const renderAddressDisplay = (address: WCAddress | null, type: 'billing' | 'shipping') => {
     if (!address || !address.address_1) {
       return (
-        <p className="text-gray-500">No {type} address saved.</p>
+        <p className="text-[var(--muted)]">No {type} address saved.</p>
       );
     }
 
     return (
-      <address className="not-italic text-sm text-gray-600">
+      <address className="not-italic text-sm text-[var(--muted)]">
         {address.first_name} {address.last_name}
         {address.company && <><br />{address.company}</>}
         <br />
@@ -213,7 +213,7 @@ export default function AddressesPage() {
         />
         <select
           {...form.register('country')}
-          className="w-full border border-gray-300 px-4 py-3 text-sm focus:border-black focus:outline-none"
+          className="w-full border border-[var(--border)] bg-transparent px-4 py-3 text-sm text-[var(--cream)] focus:border-[var(--gold)] focus:outline-none"
         >
           <option value="US">United States</option>
           <option value="CA">Canada</option>
@@ -253,30 +253,30 @@ export default function AddressesPage() {
     <div className="mx-auto max-w-4xl px-4 py-12 lg:px-8 lg:py-16">
       {/* Breadcrumb */}
       <nav className="mb-8">
-        <ol className="flex items-center gap-2 text-sm text-gray-500">
+        <ol className="flex items-center gap-2 text-sm text-[var(--muted)]">
           <li>
-            <Link href="/account" className="hover:text-black">
+            <Link href="/account" className="hover:text-[var(--gold)]">
               Account
             </Link>
           </li>
           <li>/</li>
-          <li className="text-black">Addresses</li>
+          <li className="text-[var(--cream)]">Addresses</li>
         </ol>
       </nav>
 
-      <h1 className="text-3xl font-light">Addresses</h1>
-      <p className="mt-2 text-gray-500">
+      <h1 className="font-heading text-3xl font-light text-[var(--cream)]">Addresses</h1>
+      <p className="mt-2 text-[var(--muted)]">
         Manage your billing and shipping addresses.
       </p>
 
       {error && (
-        <div className="mt-6 rounded bg-red-50 p-3 text-sm text-red-600">
+        <div className="mt-6 border border-[var(--rose)]/30 bg-[var(--rose)]/10 p-3 text-sm text-[var(--rose)]">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="mt-6 rounded bg-green-50 p-3 text-sm text-green-600">
+        <div className="mt-6 border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm text-emerald-400">
           {success}
         </div>
       )}
@@ -284,12 +284,12 @@ export default function AddressesPage() {
       {isLoading ? (
         <div className="mt-8 grid gap-8 sm:grid-cols-2">
           {[1, 2].map((i) => (
-            <div key={i} className="animate-pulse border border-gray-200 p-6">
-              <div className="h-4 w-24 bg-gray-200 rounded mb-4"></div>
+            <div key={i} className="animate-pulse border border-[var(--border)] p-6">
+              <div className="h-4 w-24 bg-[var(--surface-2)] mb-4"></div>
               <div className="space-y-2">
-                <div className="h-3 w-48 bg-gray-200 rounded"></div>
-                <div className="h-3 w-40 bg-gray-200 rounded"></div>
-                <div className="h-3 w-32 bg-gray-200 rounded"></div>
+                <div className="h-3 w-48 bg-[var(--surface-2)]"></div>
+                <div className="h-3 w-40 bg-[var(--surface-2)]"></div>
+                <div className="h-3 w-32 bg-[var(--surface-2)]"></div>
               </div>
             </div>
           ))}
@@ -297,13 +297,13 @@ export default function AddressesPage() {
       ) : (
         <div className="mt-8 grid gap-8 sm:grid-cols-2">
           {/* Billing Address */}
-          <div className="border border-gray-200 p-6">
+          <div className="border border-[var(--border)] p-6">
             <div className="flex items-start justify-between">
-              <h2 className="font-medium">Billing Address</h2>
+              <h2 className="font-heading font-medium text-[var(--cream)]">Billing Address</h2>
               {!editingBilling && (
                 <button
                   onClick={() => setEditingBilling(true)}
-                  className="text-sm text-gray-600 underline hover:text-black"
+                  className="text-sm text-[var(--muted)] underline hover:text-[var(--gold)]"
                 >
                   Edit
                 </button>
@@ -319,13 +319,13 @@ export default function AddressesPage() {
           </div>
 
           {/* Shipping Address */}
-          <div className="border border-gray-200 p-6">
+          <div className="border border-[var(--border)] p-6">
             <div className="flex items-start justify-between">
-              <h2 className="font-medium">Shipping Address</h2>
+              <h2 className="font-heading font-medium text-[var(--cream)]">Shipping Address</h2>
               {!editingShipping && (
                 <button
                   onClick={() => setEditingShipping(true)}
-                  className="text-sm text-gray-600 underline hover:text-black"
+                  className="text-sm text-[var(--muted)] underline hover:text-[var(--gold)]"
                 >
                   Edit
                 </button>

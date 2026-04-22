@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { wooCommerce } from '@/lib/woocommerce';
 import { validateToken, getCurrentUser } from '@/lib/auth';
+import { readDb } from '@/lib/db'
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -55,7 +56,17 @@ export async function GET(request: Request, { params }: RouteParams) {
       );
     }
 
-    return NextResponse.json(order);
+    const tracking = readDb<{
+      id: string
+      carrier?: string
+      trackingNumber?: string
+      trackingUrl?: string
+      statusNote?: string
+      isActive?: boolean
+      updatedAt?: string
+    }>('order-tracking').find((t) => String(t.id) === String(orderId) && t.isActive !== false)
+
+    return NextResponse.json({ ...order, tracking: tracking || null });
   } catch (error) {
     console.error('Error fetching order:', error);
 

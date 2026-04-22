@@ -220,6 +220,10 @@ export interface CreateOrderData {
     method_title: string;
     total: string;
   }>;
+  fee_lines?: Array<{
+    name: string;
+    total: string;
+  }>;
   customer_id?: number;
   customer_note?: string;
   coupon_lines?: Array<{ code: string }>;

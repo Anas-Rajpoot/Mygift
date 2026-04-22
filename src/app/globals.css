@@ -1,41 +1,241 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* ============================================
+   LUFGA FONT-FACE DECLARATIONS (All 9 weights × 2 styles)
+   ============================================ */
+
+@font-face {
+  font-family: 'Lufga';
+  src: url('/fonts/Lufga-Thin.woff2') format('woff2'),
+       url('/fonts/Lufga-Thin.woff') format('woff');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lufga';
+  src: url('/fonts/Lufga-ThinItalic.woff2') format('woff2'),
+       url('/fonts/Lufga-ThinItalic.woff') format('woff');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lufga';
+  src: url('/fonts/Lufga-ExtraLight.woff2') format('woff2'),
+       url('/fonts/Lufga-ExtraLight.woff') format('woff');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lufga';
+  src: url('/fonts/Lufga-ExtraLightItalic.woff2') format('woff2'),
+       url('/fonts/Lufga-ExtraLightItalic.woff') format('woff');
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lufga';
+  src: url('/fonts/Lufga-Light.woff2') format('woff2'),
+       url('/fonts/Lufga-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lufga';
+  src: url('/fonts/Lufga-LightItalic.woff2') format('woff2'),
+       url('/fonts/Lufga-LightItalic.woff') format('woff');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lufga';
+  src: url('/fonts/Lufga-Regular.woff2') format('woff2'),
+       url('/fonts/Lufga-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lufga';
+  src: url('/fonts/Lufga-Italic.woff2') format('woff2'),
+       url('/fonts/Lufga-Italic.woff') format('woff');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lufga';
+  src: url('/fonts/Lufga-Medium.woff2') format('woff2'),
+       url('/fonts/Lufga-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lufga';
+  src: url('/fonts/Lufga-MediumItalic.woff2') format('woff2'),
+       url('/fonts/Lufga-MediumItalic.woff') format('woff');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lufga';
+  src: url('/fonts/Lufga-SemiBold.woff2') format('woff2'),
+       url('/fonts/Lufga-SemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lufga';
+  src: url('/fonts/Lufga-SemiBoldItalic.woff2') format('woff2'),
+       url('/fonts/Lufga-SemiBoldItalic.woff') format('woff');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lufga';
+  src: url('/fonts/Lufga-Bold.woff2') format('woff2'),
+       url('/fonts/Lufga-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lufga';
+  src: url('/fonts/Lufga-BoldItalic.woff2') format('woff2'),
+       url('/fonts/Lufga-BoldItalic.woff') format('woff');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lufga';
+  src: url('/fonts/Lufga-ExtraBold.woff2') format('woff2'),
+       url('/fonts/Lufga-ExtraBold.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lufga';
+  src: url('/fonts/Lufga-ExtraBoldItalic.woff2') format('woff2'),
+       url('/fonts/Lufga-ExtraBoldItalic.woff') format('woff');
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lufga';
+  src: url('/fonts/Lufga-Black.woff2') format('woff2'),
+       url('/fonts/Lufga-Black.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lufga';
+  src: url('/fonts/Lufga-BlackItalic.woff2') format('woff2'),
+       url('/fonts/Lufga-BlackItalic.woff') format('woff');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ============================================
+   CSS VARIABLES — Colors & Fonts
+   ============================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Colors */
+  --ink: #0f0608;
+  --surface: #1a0c10;
+  --surface-2: #241318;
+  --wine: #4a1525;
+  --gold: #c9a84c;
+  --gold-light: #e8c96a;
+  --gold-pale: #f5e8b8;
+  --cream: #fdf4e8;
+  --muted: #8a7060;
+  --rose: #c4687a;
+  --border: rgba(201, 168, 76, 0.15);
+  --border-hover: rgba(201, 168, 76, 0.4);
+
+  /* Semantic colors */
+  --background: var(--ink);
+  --foreground: var(--cream);
+
+  /* Fonts */
+  --font-display: 'Lufga', Georgia, serif;
+  --font-body: 'Lufga', sans-serif;
+  --font-label: 'Cinzel', serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-heading: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
-  --font-accent: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+  --color-ink: var(--ink);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-wine: var(--wine);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-pale: var(--gold-pale);
+  --color-cream: var(--cream);
+  --color-muted: var(--muted);
+  --color-rose: var(--rose);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-label: var(--font-label);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--ink);
+  color: var(--cream);
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar — dark theme */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--surface);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 4px;
+  background: var(--muted);
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a1a1a1;
+  background: var(--gold);
 }
 
 /* Smooth scroll */
@@ -53,9 +253,9 @@ html {
   scrollbar-width: none;
 }
 
-/* Focus styles */
+/* Focus styles — gold outline */
 *:focus-visible {
-  outline: 2px solid black;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 
@@ -88,310 +288,292 @@ html {
 
 /* Animation for page transitions */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-in-out;
 }
 
-/* =============================================
-   WordPress Content Styles
-   ============================================= */
+/* Marquee animation */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 
-/* Base prose customization for WordPress content */
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+/* Gold glow effect */
+.gold-glow {
+  box-shadow: 0 0 40px rgba(201, 168, 76, 0.1);
+}
+
+/* Shop sidebar custom scrollbar */
+.shop-sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201,168,76,0.25) transparent;
+}
+
+.shop-sidebar-scroll::-webkit-scrollbar {
+  width: 2px !important;
+}
+
+.shop-sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.shop-sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(201,168,76,0.25) !important;
+  border-radius: 0 !important;
+}
+
+.shop-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(201,168,76,0.5) !important;
+}
+
+/* Hide scrollbar on Firefox completely when not hovering */
+.shop-sidebar-scroll:not(:hover) {
+  scrollbar-color: transparent transparent;
+}
+
+.shop-pills-row::-webkit-scrollbar {
+  display: none;
+}
+
+/* Scroll indicator animation */
+@keyframes scrollLine {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+.animate-scroll-line {
+  animation: scrollLine 2s ease-in-out infinite;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(253, 244, 232, 0.2) !important;
+  font-style: italic;
+  font-family: 'Lufga', sans-serif;
+  font-weight: 300;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #1a0c10 inset;
+  -webkit-text-fill-color: #fdf4e8;
+  transition: background-color 5000s;
+}
+
+/* WordPress Content Styles — dark theme */
 .wp-content {
-  @apply prose prose-gray max-w-none;
+  @apply prose max-w-none;
+  --tw-prose-body: var(--cream);
+  --tw-prose-headings: var(--cream);
+  --tw-prose-links: var(--gold);
+  --tw-prose-bold: var(--cream);
+  --tw-prose-counters: var(--muted);
+  --tw-prose-bullets: var(--muted);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--cream);
+  --tw-prose-quote-borders: var(--gold);
+  --tw-prose-code: var(--gold-light);
+  --tw-prose-pre-code: var(--cream);
+  --tw-prose-pre-bg: var(--surface);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
 
-  /* Headings */
   & h1 {
-    @apply font-heading text-3xl font-normal tracking-tight mt-12 mb-6 first:mt-0;
+    font-family: var(--font-display);
+    @apply text-3xl font-light tracking-tight mt-12 mb-6 first:mt-0;
+    color: var(--cream);
   }
 
   & h2 {
-    @apply font-heading text-2xl font-normal tracking-tight mt-10 mb-4 pb-2 border-b border-gray-200;
+    font-family: var(--font-display);
+    @apply text-2xl font-light tracking-tight mt-10 mb-4 pb-2;
+    border-bottom: 1px solid var(--border);
+    color: var(--cream);
   }
 
   & h3 {
-    @apply font-heading text-xl font-medium mt-8 mb-3;
+    font-family: var(--font-display);
+    @apply text-xl font-normal mt-8 mb-3;
+    color: var(--cream);
   }
 
   & h4 {
-    @apply font-heading text-lg font-medium mt-6 mb-2;
+    font-family: var(--font-display);
+    @apply text-lg font-normal mt-6 mb-2;
+    color: var(--cream);
   }
 
-  & h5, & h6 {
-    @apply font-heading text-base font-medium mt-4 mb-2;
-  }
-
-  /* Paragraphs */
   & p {
-    @apply text-gray-700 leading-relaxed mb-4;
+    color: var(--cream);
+    opacity: 0.85;
+    @apply leading-relaxed mb-4;
   }
 
-  /* Links */
   & a {
-    @apply text-black underline underline-offset-4 decoration-gray-300 transition-colors;
+    color: var(--gold);
+    @apply underline underline-offset-4 transition-colors;
+    text-decoration-color: rgba(201, 168, 76, 0.4);
 
     &:hover {
-      @apply decoration-black;
+      text-decoration-color: var(--gold);
     }
   }
 
-  /* Lists */
-  & ul {
-    @apply list-disc pl-6 mb-4 space-y-2;
-  }
-
-  & ol {
-    @apply list-decimal pl-6 mb-4 space-y-2;
-  }
+  & ul { @apply list-disc pl-6 mb-4 space-y-2; }
+  & ol { @apply list-decimal pl-6 mb-4 space-y-2; }
 
   & li {
-    @apply text-gray-700;
+    color: var(--cream);
+    opacity: 0.85;
 
     & > ul, & > ol {
       @apply mt-2 mb-0;
     }
   }
 
-  /* Blockquotes */
   & blockquote {
-    @apply border-l-4 border-black pl-6 py-2 my-6 italic bg-gray-50;
+    border-left: 4px solid var(--gold);
+    background: var(--surface);
+    @apply pl-6 py-2 my-6 italic;
 
-    & p {
-      @apply mb-0;
-    }
+    & p { @apply mb-0; }
   }
 
-  /* Code */
   & code {
-    @apply bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800;
+    background: var(--surface);
+    color: var(--gold-light);
+    @apply px-1.5 py-0.5 rounded text-sm font-mono;
   }
 
   & pre {
-    @apply bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto my-6;
+    background: var(--surface);
+    @apply p-4 rounded-lg overflow-x-auto my-6;
 
     & code {
-      @apply bg-transparent p-0 text-inherit;
+      @apply bg-transparent p-0;
+      color: var(--cream);
     }
   }
 
-  /* Tables */
-  & table {
-    @apply w-full border-collapse my-6;
-  }
+  & table { @apply w-full border-collapse my-6; }
 
   & th {
-    @apply bg-gray-100 border border-gray-200 px-4 py-3 text-left font-medium text-sm uppercase tracking-wider;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    @apply px-4 py-3 text-left font-medium text-sm uppercase tracking-wider;
+    color: var(--gold);
   }
 
   & td {
-    @apply border border-gray-200 px-4 py-3 text-gray-700;
+    border: 1px solid var(--border);
+    @apply px-4 py-3;
+    color: var(--cream);
   }
 
-  & tr:nth-child(even) td {
-    @apply bg-gray-50;
-  }
-
-  /* Images */
-  & img {
-    @apply rounded-lg my-6 mx-auto;
-  }
+  & img { @apply rounded-lg my-6 mx-auto; }
 
   & figure {
     @apply my-8;
-
-    & img {
-      @apply my-0;
-    }
-
+    & img { @apply my-0; }
     & figcaption {
-      @apply text-center text-sm text-gray-500 mt-3;
+      @apply text-center text-sm mt-3;
+      color: var(--muted);
     }
   }
 
-  /* Horizontal rule */
   & hr {
-    @apply border-0 border-t border-gray-200 my-8;
+    border: 0;
+    border-top: 1px solid var(--border);
+    @apply my-8;
   }
 
-  /* Definition lists */
-  & dl {
-    @apply my-4;
-  }
+  & strong { @apply font-semibold; color: var(--cream); }
 
-  & dt {
-    @apply font-medium text-gray-900 mt-4;
-  }
-
-  & dd {
-    @apply ml-4 text-gray-700;
-  }
-
-  /* Strong and emphasis */
-  & strong {
-    @apply font-semibold text-gray-900;
-  }
-
-  & em {
-    @apply italic;
-  }
-
-  /* WordPress specific blocks */
-
-  /* Buttons (WP Block) */
+  /* WordPress blocks */
   & .wp-block-button {
     @apply my-4;
 
     & .wp-block-button__link {
-      @apply inline-block bg-black text-white px-6 py-3 no-underline font-medium transition-colors;
+      background: var(--gold);
+      color: var(--ink);
+      @apply inline-block px-6 py-3 no-underline font-medium transition-colors;
 
-      &:hover {
-        @apply bg-gray-800;
-      }
+      &:hover { background: var(--gold-light); }
     }
   }
 
-  /* Columns (WP Block) */
   & .wp-block-columns {
     @apply flex flex-wrap gap-6 my-6;
-
-    & .wp-block-column {
-      @apply flex-1 min-w-[250px];
-    }
+    & .wp-block-column { @apply flex-1 min-w-[250px]; }
   }
 
-  /* Cover block */
-  & .wp-block-cover {
-    @apply relative min-h-[300px] flex items-center justify-center my-8 rounded-lg overflow-hidden;
-
-    & .wp-block-cover__inner-container {
-      @apply relative z-10 text-white text-center p-8;
-    }
-  }
-
-  /* Gallery */
   & .wp-block-gallery {
     @apply grid grid-cols-2 md:grid-cols-3 gap-4 my-6;
-
-    & figure {
-      @apply m-0;
-    }
-
-    & img {
-      @apply m-0 w-full h-48 object-cover;
-    }
+    & figure { @apply m-0; }
+    & img { @apply m-0 w-full h-48 object-cover; }
   }
 
-  /* Separator */
   & .wp-block-separator {
-    @apply border-0 border-t-2 border-gray-300 my-10 w-24 mx-auto;
+    border: 0;
+    border-top: 2px solid var(--border);
+    @apply my-10 w-24 mx-auto;
 
-    &.is-style-wide {
-      @apply w-full;
-    }
-
-    &.is-style-dots {
-      @apply border-0 text-center;
-
-      &::before {
-        content: "···";
-        @apply text-2xl text-gray-400 tracking-[1em];
-      }
-    }
+    &.is-style-wide { @apply w-full; }
   }
 
-  /* Quote */
   & .wp-block-quote {
-    @apply border-l-4 border-black pl-6 my-8;
+    border-left: 4px solid var(--gold);
+    @apply pl-6 my-8;
 
     & cite {
-      @apply block mt-4 text-sm text-gray-500 not-italic;
-
-      &::before {
-        content: "— ";
-      }
+      @apply block mt-4 text-sm not-italic;
+      color: var(--muted);
+      &::before { content: "\2014  "; }
     }
   }
 
-  /* Pullquote */
   & .wp-block-pullquote {
-    @apply border-t-4 border-b-4 border-black py-8 my-10 text-center;
+    border-top: 4px solid var(--gold);
+    border-bottom: 4px solid var(--gold);
+    @apply py-8 my-10 text-center;
 
-    & blockquote {
-      @apply border-0 p-0 bg-transparent font-accent;
-    }
-
-    & p {
-      @apply text-2xl font-light italic;
-    }
-
+    & blockquote { @apply border-0 p-0 bg-transparent; font-family: var(--font-label); }
+    & p { font-family: var(--font-display); @apply text-2xl font-light italic; }
     & cite {
-      @apply text-sm text-gray-500 mt-4 block font-sans not-italic;
+      font-family: var(--font-body);
+      @apply text-sm mt-4 block not-italic;
+      color: var(--muted);
     }
   }
 
-  /* File block */
-  & .wp-block-file {
-    @apply flex items-center gap-4 p-4 bg-gray-50 rounded my-4;
-
-    & a:first-child {
-      @apply flex-1;
-    }
-
-    & .wp-block-file__button {
-      @apply bg-black text-white px-4 py-2 text-sm no-underline;
-
-      &:hover {
-        @apply bg-gray-800;
-      }
-    }
-  }
-
-  /* Video/Audio */
-  & .wp-block-video, & .wp-block-audio {
-    @apply my-6;
-
-    & video, & audio {
-      @apply w-full;
-    }
-  }
-
-  /* Embed blocks (YouTube, etc.) */
   & .wp-block-embed {
     @apply my-8;
-
     & .wp-block-embed__wrapper {
       @apply relative pb-[56.25%] h-0;
-
-      & iframe {
-        @apply absolute top-0 left-0 w-full h-full rounded-lg;
-      }
+      & iframe { @apply absolute top-0 left-0 w-full h-full rounded-lg; }
     }
-  }
-}
-
-/* Page-specific styles */
-.page-content {
-  /* First paragraph - larger intro text */
-  & > p:first-of-type {
-    @apply text-lg text-gray-600 leading-relaxed;
-  }
-}
-
-/* Policy/Legal page styles */
-.legal-content {
-  & h2 {
-    @apply text-lg font-semibold mt-8 mb-3 uppercase tracking-wide;
-  }
-
-  & h3 {
-    @apply text-base font-semibold mt-6 mb-2;
   }
 }

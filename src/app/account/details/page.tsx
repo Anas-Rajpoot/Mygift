@@ -160,23 +160,23 @@ export default function AccountDetailsPage() {
     <div className="mx-auto max-w-2xl px-4 py-12 lg:px-8 lg:py-16">
       {/* Breadcrumb */}
       <nav className="mb-8">
-        <ol className="flex items-center gap-2 text-sm text-gray-500">
+        <ol className="flex items-center gap-2 text-sm text-[var(--muted)]">
           <li>
-            <Link href="/account" className="hover:text-black">
+            <Link href="/account" className="hover:text-[var(--gold)]">
               Account
             </Link>
           </li>
           <li>/</li>
-          <li className="text-black">Account Details</li>
+          <li className="text-[var(--cream)]">Account Details</li>
         </ol>
       </nav>
 
-      <h1 className="text-3xl font-light">Account Details</h1>
-      <p className="mt-2 text-gray-500">Update your personal information.</p>
+      <h1 className="font-heading text-3xl font-light text-[var(--cream)]">Account Details</h1>
+      <p className="mt-2 text-[var(--muted)]">Update your personal information.</p>
 
       {/* Personal Details Form */}
       <form onSubmit={detailsForm.handleSubmit(onSubmitDetails)} className="mt-8">
-        <h2 className="text-lg font-medium">Personal Information</h2>
+        <h2 className="font-heading text-lg font-medium text-[var(--cream)]">Personal Information</h2>
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <Input
             placeholder="First name"
@@ -199,13 +199,13 @@ export default function AccountDetailsPage() {
         </div>
 
         {detailsError && (
-          <div className="mt-4 rounded bg-red-50 p-3 text-sm text-red-600">
+          <div className="mt-4 border border-[var(--rose)]/30 bg-[var(--rose)]/10 p-3 text-sm text-[var(--rose)]">
             {detailsError}
           </div>
         )}
 
         {detailsSuccess && (
-          <div className="mt-4 rounded bg-green-50 p-3 text-sm text-green-600">
+          <div className="mt-4 border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm text-emerald-400">
             Your details have been updated successfully.
           </div>
         )}
@@ -218,8 +218,8 @@ export default function AccountDetailsPage() {
       </form>
 
       {/* Password Form */}
-      <form onSubmit={passwordForm.handleSubmit(onSubmitPassword)} className="mt-12 border-t pt-8">
-        <h2 className="text-lg font-medium">Change Password</h2>
+      <form onSubmit={passwordForm.handleSubmit(onSubmitPassword)} className="mt-12 border-t border-[var(--border)] pt-8">
+        <h2 className="font-heading text-lg font-medium text-[var(--cream)]">Change Password</h2>
         <div className="mt-4 space-y-4">
           <Input
             type="password"
@@ -242,13 +242,13 @@ export default function AccountDetailsPage() {
         </div>
 
         {passwordError && (
-          <div className="mt-4 rounded bg-red-50 p-3 text-sm text-red-600">
+          <div className="mt-4 border border-[var(--rose)]/30 bg-[var(--rose)]/10 p-3 text-sm text-[var(--rose)]">
             {passwordError}
           </div>
         )}
 
         {passwordSuccess && (
-          <div className="mt-4 rounded bg-green-50 p-3 text-sm text-green-600">
+          <div className="mt-4 border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm text-emerald-400">
             Your password has been changed successfully.
           </div>
         )}

@@ -8,7 +8,7 @@ export function Skeleton({ className }: SkeletonProps) {
   return (
     <div
       className={cn(
-        'animate-pulse bg-gray-200',
+        'animate-pulse bg-[var(--surface-2)]',
         className
       )}
     />
@@ -40,7 +40,6 @@ export function ProductGridSkeleton({ count = 8 }: { count?: number }) {
 export function ProductDetailSkeleton() {
   return (
     <div className="grid gap-8 lg:grid-cols-2">
-      {/* Image Gallery */}
       <div className="space-y-4">
         <Skeleton className="aspect-[3/4] w-full" />
         <div className="flex gap-2">
@@ -49,8 +48,6 @@ export function ProductDetailSkeleton() {
           ))}
         </div>
       </div>
-
-      {/* Product Info */}
       <div className="space-y-6">
         <div className="space-y-2">
           <Skeleton className="h-8 w-3/4" />

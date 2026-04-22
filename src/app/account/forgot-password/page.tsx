@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Mail } from 'lucide-react';
 
 const forgotPasswordSchema = z.object({
   email: z.string().email('Please enter a valid email'),
@@ -57,23 +58,11 @@ export default function ForgotPasswordPage() {
     return (
       <div className="mx-auto max-w-md px-4 py-16 lg:px-8">
         <div className="text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-            <svg
-              className="h-8 w-8 text-green-600"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="2"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-              />
-            </svg>
+          <div className="mx-auto flex h-16 w-16 items-center justify-center border border-emerald-500/30 bg-emerald-500/10">
+            <Mail className="h-8 w-8 text-emerald-400" />
           </div>
-          <h1 className="mt-6 text-3xl font-light">Check your email</h1>
-          <p className="mt-2 text-gray-500">
+          <h1 className="mt-6 font-heading text-3xl font-light text-[var(--cream)]">Check your email</h1>
+          <p className="mt-2 text-[var(--muted)]">
             If an account exists with that email, we&apos;ve sent password reset instructions.
           </p>
           <Link href="/account/login">
@@ -89,8 +78,8 @@ export default function ForgotPasswordPage() {
   return (
     <div className="mx-auto max-w-md px-4 py-16 lg:px-8">
       <div className="text-center">
-        <h1 className="text-3xl font-light">Reset Password</h1>
-        <p className="mt-2 text-gray-500">
+        <h1 className="font-heading text-3xl font-light text-[var(--cream)]">Reset Password</h1>
+        <p className="mt-2 text-[var(--muted)]">
           Enter your email and we&apos;ll send you instructions to reset your password.
         </p>
       </div>
@@ -104,7 +93,7 @@ export default function ForgotPasswordPage() {
         />
 
         {error && (
-          <div className="rounded bg-red-50 p-3 text-sm text-red-600">
+          <div className="border border-[var(--rose)]/30 bg-[var(--rose)]/10 p-3 text-sm text-[var(--rose)]">
             {error}
           </div>
         )}
@@ -119,9 +108,9 @@ export default function ForgotPasswordPage() {
         </Button>
       </form>
 
-      <p className="mt-8 text-center text-sm text-gray-500">
+      <p className="mt-8 text-center text-sm text-[var(--muted)]">
         Remember your password?{' '}
-        <Link href="/account/login" className="text-black underline">
+        <Link href="/account/login" className="text-[var(--gold)] underline hover:text-[var(--gold-light)]">
           Sign in
         </Link>
       </p>

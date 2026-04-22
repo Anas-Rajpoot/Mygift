@@ -1,0 +1,6 @@
+[
+  { "id": "pay-jazzcash", "name": "JazzCash", "isActive": true, "sortOrder": 1 },
+  { "id": "pay-easypaisa", "name": "EasyPaisa", "isActive": true, "sortOrder": 2 },
+  { "id": "pay-visa", "name": "Visa", "isActive": true, "sortOrder": 3 },
+  { "id": "pay-mastercard", "name": "Mastercard", "isActive": true, "sortOrder": 4 }
+]

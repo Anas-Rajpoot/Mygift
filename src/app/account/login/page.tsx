@@ -63,9 +63,12 @@ function LoginForm() {
   return (
     <div className="mx-auto max-w-md px-4 py-16 lg:px-8">
       <div className="text-center">
-        <h1 className="text-3xl font-light">Sign In</h1>
-        <p className="mt-2 text-gray-500">
-          Welcome back! Please enter your details.
+        <span className="font-accent text-[10px] uppercase tracking-[0.5em] text-[var(--gold)]">
+          Welcome Back
+        </span>
+        <h1 className="mt-3 font-heading text-4xl font-light text-[var(--cream)]">Sign In</h1>
+        <p className="mt-2 text-[var(--muted)]">
+          Please enter your details.
         </p>
       </div>
 
@@ -85,7 +88,7 @@ function LoginForm() {
         />
 
         {error && (
-          <div className="rounded bg-red-50 p-3 text-sm text-red-600">
+          <div className="border border-[var(--rose)]/30 bg-[var(--rose)]/10 p-3 text-sm text-[var(--rose)]">
             {error}
           </div>
         )}
@@ -94,13 +97,13 @@ function LoginForm() {
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
-              className="h-4 w-4 border-gray-300 text-black focus:ring-black"
+              className="h-4 w-4 border-[var(--border)] bg-transparent text-[var(--gold)] focus:ring-[var(--gold)] focus:ring-offset-[var(--ink)]"
             />
-            <span className="text-sm">Remember me</span>
+            <span className="text-sm text-[var(--cream)]">Remember me</span>
           </label>
           <Link
             href="/account/forgot-password"
-            className="text-sm text-gray-600 hover:text-black"
+            className="text-sm text-[var(--muted)] transition-colors hover:text-[var(--gold)]"
           >
             Forgot password?
           </Link>
@@ -116,11 +119,11 @@ function LoginForm() {
         </Button>
       </form>
 
-      <p className="mt-8 text-center text-sm text-gray-500">
+      <p className="mt-8 text-center text-sm text-[var(--muted)]">
         Don&apos;t have an account?{' '}
         <Link
           href={`/account/register${redirect !== '/account' ? `?redirect=${redirect}` : ''}`}
-          className="text-black underline"
+          className="text-[var(--gold)] underline"
         >
           Create one
         </Link>
@@ -135,12 +138,12 @@ export default function LoginPage() {
       fallback={
         <div className="mx-auto max-w-md px-4 py-16 lg:px-8">
           <div className="animate-pulse">
-            <div className="h-8 w-32 bg-gray-200 rounded mx-auto mb-4"></div>
-            <div className="h-4 w-48 bg-gray-200 rounded mx-auto mb-8"></div>
+            <div className="h-8 w-32 bg-[var(--surface-2)] mx-auto mb-4"></div>
+            <div className="h-4 w-48 bg-[var(--surface-2)] mx-auto mb-8"></div>
             <div className="space-y-4">
-              <div className="h-12 bg-gray-200 rounded"></div>
-              <div className="h-12 bg-gray-200 rounded"></div>
-              <div className="h-12 bg-gray-200 rounded"></div>
+              <div className="h-12 bg-[var(--surface-2)]"></div>
+              <div className="h-12 bg-[var(--surface-2)]"></div>
+              <div className="h-12 bg-[var(--surface-2)]"></div>
             </div>
           </div>
         </div>

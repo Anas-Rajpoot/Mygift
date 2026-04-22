@@ -26,6 +26,16 @@ const nextConfig: NextConfig = {
         hostname: '**.msrbuilds.com',
       },
       {
+        // Current WordPress domain
+        protocol: 'https',
+        hostname: 'anas.inflowcommerce.com',
+      },
+      {
+        // Wildcard for inflowcommerce subdomains
+        protocol: 'https',
+        hostname: '**.inflowcommerce.com',
+      },
+      {
         // ZipWP staging domains
         protocol: 'https',
         hostname: '**.zipwp.top',
@@ -34,6 +44,11 @@ const nextConfig: NextConfig = {
         // For local development
         protocol: 'http',
         hostname: 'localhost',
+      },
+      {
+        // Unsplash (used for optional demo banners)
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
       },
     ],
     // Image formats to use

@@ -91,9 +91,12 @@ function RegisterForm() {
   return (
     <div className="mx-auto max-w-md px-4 py-16 lg:px-8">
       <div className="text-center">
-        <h1 className="text-3xl font-light">Create Account</h1>
-        <p className="mt-2 text-gray-500">
-          Join us and start shopping today.
+        <span className="font-accent text-[10px] uppercase tracking-[0.5em] text-[var(--gold)]">
+          Join Us
+        </span>
+        <h1 className="mt-3 font-heading text-4xl font-light text-[var(--cream)]">Create Account</h1>
+        <p className="mt-2 text-[var(--muted)]">
+          Start shopping today.
         </p>
       </div>
 
@@ -133,18 +136,18 @@ function RegisterForm() {
         />
 
         {error && (
-          <div className="rounded bg-red-50 p-3 text-sm text-red-600">
+          <div className="border border-[var(--rose)]/30 bg-[var(--rose)]/10 p-3 text-sm text-[var(--rose)]">
             {error}
           </div>
         )}
 
-        <div className="text-xs text-gray-500">
+        <div className="text-xs text-[var(--muted)]">
           By creating an account, you agree to our{' '}
-          <Link href="/terms" className="underline">
+          <Link href="/terms" className="text-[var(--gold)] underline">
             Terms of Service
           </Link>{' '}
           and{' '}
-          <Link href="/privacy-policy" className="underline">
+          <Link href="/privacy-policy" className="text-[var(--gold)] underline">
             Privacy Policy
           </Link>
           .
@@ -160,11 +163,11 @@ function RegisterForm() {
         </Button>
       </form>
 
-      <p className="mt-8 text-center text-sm text-gray-500">
+      <p className="mt-8 text-center text-sm text-[var(--muted)]">
         Already have an account?{' '}
         <Link
           href={`/account/login${redirect !== '/account' ? `?redirect=${redirect}` : ''}`}
-          className="text-black underline"
+          className="text-[var(--gold)] underline"
         >
           Sign in
         </Link>
@@ -179,17 +182,17 @@ export default function RegisterPage() {
       fallback={
         <div className="mx-auto max-w-md px-4 py-16 lg:px-8">
           <div className="animate-pulse">
-            <div className="h-8 w-40 bg-gray-200 rounded mx-auto mb-4"></div>
-            <div className="h-4 w-56 bg-gray-200 rounded mx-auto mb-8"></div>
+            <div className="h-8 w-40 bg-[var(--surface-2)] mx-auto mb-4"></div>
+            <div className="h-4 w-56 bg-[var(--surface-2)] mx-auto mb-8"></div>
             <div className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="h-12 bg-gray-200 rounded"></div>
-                <div className="h-12 bg-gray-200 rounded"></div>
+                <div className="h-12 bg-[var(--surface-2)]"></div>
+                <div className="h-12 bg-[var(--surface-2)]"></div>
               </div>
-              <div className="h-12 bg-gray-200 rounded"></div>
-              <div className="h-12 bg-gray-200 rounded"></div>
-              <div className="h-12 bg-gray-200 rounded"></div>
-              <div className="h-12 bg-gray-200 rounded"></div>
+              <div className="h-12 bg-[var(--surface-2)]"></div>
+              <div className="h-12 bg-[var(--surface-2)]"></div>
+              <div className="h-12 bg-[var(--surface-2)]"></div>
+              <div className="h-12 bg-[var(--surface-2)]"></div>
             </div>
           </div>
         </div>

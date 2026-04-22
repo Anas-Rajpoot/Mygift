@@ -1,0 +1,18 @@
+[
+  {
+    "id": "ann-1",
+    "text": "Same-day delivery in Karachi, Lahore & Islamabad",
+    "link": "",
+    "isActive": true,
+    "sortOrder": 1,
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "ann-2",
+    "text": "International orders welcome — JazzCash · EasyPaisa · Cards",
+    "link": "",
+    "isActive": true,
+    "sortOrder": 2,
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  }
+]

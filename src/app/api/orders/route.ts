@@ -10,9 +10,19 @@ interface OrderRequestBody {
     variation_id?: number;
     quantity: number;
   }>;
+  fee_lines?: Array<{
+    name: string;
+    total: string;
+  }>;
+  shipping_lines?: Array<{
+    method_id: string;
+    method_title: string;
+    total: string;
+  }>;
   customer_note?: string;
   create_account?: boolean;
   password?: string;
+  payment_method?: 'cod' | 'card';
 }
 
 export async function POST(request: Request) {
@@ -20,9 +30,11 @@ export async function POST(request: Request) {
     const body: OrderRequestBody = await request.json();
 
     // Validate required fields
-    if (!body.billing || !body.line_items?.length) {
+    const hasLineItems = !!body.line_items?.length;
+    const hasFeeLines = !!body.fee_lines?.length;
+    if (!body.billing || (!hasLineItems && !hasFeeLines)) {
       return NextResponse.json(
-        { message: 'Missing required fields' },
+        { message: 'At least one product or custom item is required' },
         { status: 400 }
       );
     }
@@ -53,12 +65,14 @@ export async function POST(request: Request) {
 
     // Create the order
     const order = await wooCommerce.orders.create({
-      payment_method: 'cod', // Cash on delivery as default
-      payment_method_title: 'Cash on Delivery',
+      payment_method: body.payment_method === 'card' ? 'card' : 'cod',
+      payment_method_title: body.payment_method === 'card' ? 'Card / Online' : 'Cash on Delivery',
       set_paid: false,
       billing: body.billing,
       shipping: body.shipping,
       line_items: body.line_items,
+      fee_lines: body.fee_lines,
+      shipping_lines: body.shipping_lines,
       customer_id: customerId || undefined,
       customer_note: body.customer_note,
     });

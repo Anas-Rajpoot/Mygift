@@ -1,0 +1,20 @@
+[
+  {
+    "id": "karachi",
+    "name": "Karachi",
+    "slug": "karachi",
+    "province": "Sindh",
+    "sameDay": true,
+    "nextDay": true,
+    "standardDelivery": true,
+    "sameDayPrice": 299,
+    "nextDayPrice": 199,
+    "standardPrice": 0,
+    "mapX": 25,
+    "mapY": 72,
+    "isActive": true,
+    "sortOrder": 1,
+    "deliveryNotes": "Outer areas may take longer",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  }
+]

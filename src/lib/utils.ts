@@ -13,8 +13,8 @@ export function cn(...inputs: ClassValue[]) {
  */
 export function formatPrice(
   price: number | string,
-  currency: string = 'USD',
-  locale: string = 'en-US'
+  currency: string = 'PKR',
+  locale: string = 'en-PK'
 ): string {
   const numericPrice = typeof price === 'string' ? parseFloat(price) : price;
 
@@ -63,9 +63,9 @@ export function getCategoryUrl(slug: string): string {
 
 /**
  * Parse price range from WooCommerce variable product
- * Returns formatted string like "$10.00 - $20.00"
+ * Returns formatted string like "PKR 10.00 - PKR 20.00"
  */
-export function formatPriceRange(price: string, currency: string = 'USD'): string {
+export function formatPriceRange(price: string, currency: string = 'PKR'): string {
   if (!price) return '';
 
   // WooCommerce returns price range as "10.00 - 20.00" for variable products

@@ -1,0 +1,76 @@
+[
+  {
+    "id": "main",
+    "storeName": "MyGift.pk",
+    "storeTagline": "The art of gifting, perfected",
+    "logoUrl": "",
+    "faviconUrl": "",
+    "whatsappNumber": "923001282333",
+    "whatsappNumber2": "923084410261",
+    "supportEmail": "support@mygift.pk",
+    "supportPhone": "0300-1282333",
+    "supportPhone2": "",
+    "address": "Gulghast, Chungi No.6, Multan",
+    "city": "Multan",
+    "social": {
+      "facebook": "https://www.facebook.com/profile.php?id=61580985345163",
+      "instagram": "https://www.instagram.com/my_gift_pk/",
+      "tiktok": "https://www.tiktok.com/@mygift.pk",
+      "pinterest": "https://www.pinterest.com/mygiftspk/",
+      "twitter": ""
+    },
+    "seo": {
+      "defaultTitle": "MyGift.pk",
+      "titleSuffix": " | MyGift.pk",
+      "defaultDescription": "Luxury gifting in Pakistan",
+      "defaultOgImage": "",
+      "googleAnalyticsId": "",
+      "facebookPixelId": ""
+    },
+    "delivery": {
+      "freeDeliveryThreshold": 5000,
+      "defaultSameDayPrice": 299,
+      "defaultNextDayPrice": 199,
+      "defaultStandardPrice": 0,
+      "codAvailable": true,
+      "codFee": 0
+    },
+    "tax": {
+      "enabled": false,
+      "ratePercent": 0,
+      "applyToShipping": false
+    },
+    "maintenance": {
+      "maintenanceMode": true,
+      "maintenanceMessage": "We are updating our store. Back soon!"
+    },
+    "homeLinks": {
+      "shopAllLink": "/shop",
+      "saleLink": "/shop?on_sale=true",
+      "sendToPakistanLink": "/send-to-pakistan",
+      "bestsellersLink": "/shop?best_sellers=true",
+      "categoryLinkTemplate": "/shop?category={slug}",
+      "occasionLinkTemplate": "/occasions?occasion={slug}"
+    },
+    "domainPayments": {
+      "managePaymentsInAdmin": false,
+      "primaryDomain": "mygift.pk",
+      "adminDomain": "admin.mygift.pk",
+      "enforceHttps": true,
+      "sslEnabled": true,
+      "lockAdminByIp": false,
+      "adminAllowedIp": "",
+      "webhookSecret": "",
+      "apiSecretKey": "",
+      "stripeEnabled": false,
+      "stripePublishableKey": "",
+      "stripeSecretKey": "",
+      "paypalEnabled": false,
+      "paypalClientId": "",
+      "paypalClientSecret": "",
+      "wiseEmail": ""
+    },
+    "updatedAt": "2026-04-22T07:03:48.169Z",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  }
+]

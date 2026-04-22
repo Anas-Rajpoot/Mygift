@@ -6,16 +6,17 @@ import Link from 'next/link';
 import { useIsAuthenticated, useAuthToken } from '@/stores/auth-store';
 import { formatPrice } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { ShoppingBag } from 'lucide-react';
 import type { WCOrder } from '@/types/woocommerce';
 
 const statusColors: Record<string, string> = {
-  pending: 'bg-yellow-100 text-yellow-800',
-  processing: 'bg-blue-100 text-blue-800',
-  'on-hold': 'bg-orange-100 text-orange-800',
-  completed: 'bg-green-100 text-green-800',
-  cancelled: 'bg-gray-100 text-gray-800',
-  refunded: 'bg-purple-100 text-purple-800',
-  failed: 'bg-red-100 text-red-800',
+  pending: 'border border-[var(--gold)]/30 bg-[var(--gold)]/10 text-[var(--gold-light)]',
+  processing: 'border border-[var(--gold)]/30 bg-[var(--gold)]/10 text-[var(--gold-light)]',
+  'on-hold': 'border border-[var(--gold)]/30 bg-[var(--gold)]/10 text-[var(--gold-light)]',
+  completed: 'border border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
+  cancelled: 'border border-[var(--border)] bg-[var(--surface-2)] text-[var(--muted)]',
+  refunded: 'border border-purple-500/30 bg-purple-500/10 text-purple-400',
+  failed: 'border border-[var(--rose)]/30 bg-[var(--rose)]/10 text-[var(--rose)]',
 };
 
 const statusLabels: Record<string, string> = {
@@ -83,55 +84,43 @@ export default function OrdersPage() {
     <div className="mx-auto max-w-4xl px-4 py-12 lg:px-8 lg:py-16">
       {/* Breadcrumb */}
       <nav className="mb-8">
-        <ol className="flex items-center gap-2 text-sm text-gray-500">
+        <ol className="flex items-center gap-2 text-sm text-[var(--muted)]">
           <li>
-            <Link href="/account" className="hover:text-black">
+            <Link href="/account" className="hover:text-[var(--gold)]">
               Account
             </Link>
           </li>
           <li>/</li>
-          <li className="text-black">Orders</li>
+          <li className="text-[var(--cream)]">Orders</li>
         </ol>
       </nav>
 
-      <h1 className="text-3xl font-light">Order History</h1>
-      <p className="mt-2 text-gray-500">
+      <h1 className="font-heading text-3xl font-light text-[var(--cream)]">Order History</h1>
+      <p className="mt-2 text-[var(--muted)]">
         View and track your recent orders.
       </p>
 
       {isLoading ? (
         <div className="mt-8 space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="animate-pulse border border-gray-200 p-6">
+            <div key={i} className="animate-pulse border border-[var(--border)] p-6">
               <div className="flex justify-between">
-                <div className="h-4 w-24 bg-gray-200 rounded"></div>
-                <div className="h-4 w-20 bg-gray-200 rounded"></div>
+                <div className="h-4 w-24 bg-[var(--surface-2)]"></div>
+                <div className="h-4 w-20 bg-[var(--surface-2)]"></div>
               </div>
-              <div className="mt-4 h-4 w-48 bg-gray-200 rounded"></div>
+              <div className="mt-4 h-4 w-48 bg-[var(--surface-2)]"></div>
             </div>
           ))}
         </div>
       ) : error ? (
-        <div className="mt-8 rounded bg-red-50 p-4 text-sm text-red-600">
+        <div className="mt-8 border border-[var(--rose)]/30 bg-[var(--rose)]/10 p-4 text-sm text-[var(--rose)]">
           {error}
         </div>
       ) : orders.length === 0 ? (
-        <div className="mt-8 text-center py-12 border border-gray-200">
-          <svg
-            className="mx-auto h-12 w-12 text-gray-300"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-            />
-          </svg>
-          <h2 className="mt-4 text-lg font-medium">No orders yet</h2>
-          <p className="mt-1 text-gray-500">Start shopping to see your orders here.</p>
+        <div className="mt-8 text-center py-12 border border-[var(--border)]">
+          <ShoppingBag className="mx-auto h-12 w-12 text-[var(--muted)]" strokeWidth={1} />
+          <h2 className="mt-4 font-heading text-lg font-medium text-[var(--cream)]">No orders yet</h2>
+          <p className="mt-1 text-[var(--muted)]">Start shopping to see your orders here.</p>
           <Link href="/shop">
             <Button className="mt-6">Browse Products</Button>
           </Link>
@@ -141,22 +130,22 @@ export default function OrdersPage() {
           {orders.map((order) => (
             <div
               key={order.id}
-              className="border border-gray-200 p-6 transition-colors hover:border-gray-300"
+              className="border border-[var(--border)] p-6 transition-colors hover:border-[var(--border-hover)]"
             >
               {/* Order Header */}
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-3">
-                    <span className="font-medium">Order #{order.number}</span>
+                    <span className="font-medium text-[var(--cream)]">Order #{order.number}</span>
                     <span
-                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                        statusColors[order.status] || 'bg-gray-100 text-gray-800'
+                      className={`px-2 py-0.5 text-xs font-medium ${
+                        statusColors[order.status] || 'border border-[var(--border)] bg-[var(--surface-2)] text-[var(--muted)]'
                       }`}
                     >
                       {statusLabels[order.status] || order.status}
                     </span>
                   </div>
-                  <p className="mt-1 text-sm text-gray-500">
+                  <p className="mt-1 text-sm text-[var(--muted)]">
                     Placed on{' '}
                     {new Date(order.date_created).toLocaleDateString('en-US', {
                       year: 'numeric',
@@ -166,26 +155,26 @@ export default function OrdersPage() {
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-medium">{formatPrice(parseFloat(order.total))}</p>
-                  <p className="text-sm text-gray-500">
+                  <p className="font-medium text-[var(--cream)]">{formatPrice(parseFloat(order.total))}</p>
+                  <p className="text-sm text-[var(--muted)]">
                     {order.line_items.length} item{order.line_items.length !== 1 ? 's' : ''}
                   </p>
                 </div>
               </div>
 
               {/* Order Items Preview */}
-              <div className="mt-4 border-t pt-4">
+              <div className="mt-4 border-t border-[var(--border)] pt-4">
                 <div className="space-y-2">
                   {order.line_items.slice(0, 3).map((item) => (
                     <div key={item.id} className="flex justify-between text-sm">
-                      <span className="text-gray-600">
-                        {item.name} × {item.quantity}
+                      <span className="text-[var(--muted)]">
+                        {item.name} x {item.quantity}
                       </span>
-                      <span>{formatPrice(parseFloat(item.total))}</span>
+                      <span className="text-[var(--cream)]">{formatPrice(parseFloat(item.total))}</span>
                     </div>
                   ))}
                   {order.line_items.length > 3 && (
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-[var(--muted)]">
                       +{order.line_items.length - 3} more item{order.line_items.length - 3 !== 1 ? 's' : ''}
                     </p>
                   )}
@@ -193,12 +182,12 @@ export default function OrdersPage() {
               </div>
 
               {/* View Details Link */}
-              <div className="mt-4 border-t pt-4">
+              <div className="mt-4 border-t border-[var(--border)] pt-4">
                 <Link
                   href={`/account/orders/${order.id}`}
-                  className="text-sm font-medium text-black hover:underline"
+                  className="text-sm font-medium text-[var(--gold)] hover:text-[var(--gold-light)] hover:underline"
                 >
-                  View Order Details →
+                  View Order Details &rarr;
                 </Link>
               </div>
             </div>

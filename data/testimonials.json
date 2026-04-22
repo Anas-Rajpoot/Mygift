@@ -1,0 +1,15 @@
+[
+  {
+    "id": "test-1",
+    "customerName": "Ayesha Khan",
+    "location": "Lahore, Pakistan",
+    "rating": 5,
+    "reviewText": "Beautiful packaging and right on time delivery.",
+    "productName": "Luxury Rose Box",
+    "avatarUrl": "",
+    "isActive": true,
+    "isFeatured": true,
+    "sortOrder": 1,
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  }
+]

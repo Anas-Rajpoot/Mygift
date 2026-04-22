@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { Minus, Plus, Heart, ChevronDown } from 'lucide-react';
 import type { WCProduct, WCProductVariation } from '@/types/woocommerce';
 import { useCartStore } from '@/stores/cart-store';
 import { formatPrice, getStockStatusLabel, getStockStatusColor, stripHtml } from '@/lib/utils';
@@ -80,12 +81,12 @@ export function ProductInfo({ product, variations }: ProductInfoProps) {
   return (
     <div className="lg:sticky lg:top-24">
       {/* Breadcrumb */}
-      <nav className="mb-4 text-sm text-gray-500">
-        <Link href="/shop" className="hover:text-black">Shop</Link>
+      <nav className="mb-4 text-sm text-[var(--muted)]">
+        <Link href="/shop" className="hover:text-[var(--gold)]">Shop</Link>
         {product.categories[0] && (
           <>
             <span className="mx-2">/</span>
-            <Link href={`/shop/${product.categories[0].slug}`} className="hover:text-black">
+            <Link href={`/shop/${product.categories[0].slug}`} className="hover:text-[var(--gold)]">
               {product.categories[0].name}
             </Link>
           </>
@@ -99,10 +100,10 @@ export function ProductInfo({ product, variations }: ProductInfoProps) {
       <div className="mt-4 flex items-center gap-3">
         {isOnSale && currentSalePrice ? (
           <>
-            <span className="text-xl font-medium text-red-600">
+            <span className="text-xl font-medium text-[var(--gold)]">
               {formatPrice(currentSalePrice)}
             </span>
-            <span className="text-lg text-gray-400 line-through">
+            <span className="text-lg text-[var(--muted)] line-through">
               {formatPrice(currentRegularPrice)}
             </span>
           </>
@@ -124,7 +125,7 @@ export function ProductInfo({ product, variations }: ProductInfoProps) {
       {/* Short Description */}
       {product.short_description && (
         <div
-          className="mt-4 text-sm text-gray-600"
+          className="mt-4 text-sm text-[var(--muted)]"
           dangerouslySetInnerHTML={{ __html: product.short_description }}
         />
       )}
@@ -139,7 +140,7 @@ export function ProductInfo({ product, variations }: ProductInfoProps) {
                 <label className="mb-2 block text-sm font-medium">
                   {attribute.name}
                   {selectedAttributes[attribute.name] && (
-                    <span className="ml-2 font-normal text-gray-500">
+                    <span className="ml-2 font-normal text-[var(--muted)]">
                       : {selectedAttributes[attribute.name]}
                     </span>
                   )}
@@ -167,7 +168,7 @@ export function ProductInfo({ product, variations }: ProductInfoProps) {
                           disabled={!isAvailable}
                           className={cn(
                             'h-8 w-8 rounded-full border-2 transition-all',
-                            isSelected ? 'border-black ring-2 ring-black ring-offset-2' : 'border-gray-300',
+                            isSelected ? 'border-[var(--gold)] ring-2 ring-[var(--gold)] ring-offset-2 ring-offset-[var(--ink)]' : 'border-[var(--border-hover)]',
                             !isAvailable && 'opacity-30 cursor-not-allowed'
                           )}
                           style={{ backgroundColor: option.toLowerCase() }}
@@ -188,8 +189,8 @@ export function ProductInfo({ product, variations }: ProductInfoProps) {
                         className={cn(
                           'min-w-[3rem] border px-4 py-2 text-sm transition-colors',
                           isSelected
-                            ? 'border-black bg-black text-white'
-                            : 'border-gray-300 hover:border-black',
+                            ? 'border-[var(--gold)] bg-[var(--gold)] text-[var(--ink)]'
+                            : 'border-[var(--border)] hover:border-[var(--gold)] text-[var(--cream)]',
                           !isAvailable && 'opacity-30 cursor-not-allowed line-through'
                         )}
                       >
@@ -206,28 +207,24 @@ export function ProductInfo({ product, variations }: ProductInfoProps) {
       {/* Quantity Selector */}
       <div className="mt-6">
         <label className="mb-2 block text-sm font-medium">Quantity</label>
-        <div className="flex items-center border border-gray-300 w-fit">
+        <div className="flex items-center border border-[var(--border)] w-fit">
           <button
             type="button"
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            className="px-4 py-3 hover:bg-gray-100"
+            className="px-4 py-3 hover:bg-[var(--surface)] text-[var(--cream)]"
             aria-label="Decrease quantity"
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
-            </svg>
+            <Minus className="h-4 w-4" />
           </button>
           <span className="w-12 text-center">{quantity}</span>
           <button
             type="button"
             onClick={() => setQuantity((q) => (stockQuantity ? Math.min(stockQuantity, q + 1) : q + 1))}
             disabled={stockQuantity ? quantity >= stockQuantity : false}
-            className="px-4 py-3 hover:bg-gray-100 disabled:opacity-50"
+            className="px-4 py-3 hover:bg-[var(--surface)] text-[var(--cream)] disabled:opacity-50"
             aria-label="Increase quantity"
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
+            <Plus className="h-4 w-4" />
           </button>
         </div>
       </div>
@@ -250,59 +247,31 @@ export function ProductInfo({ product, variations }: ProductInfoProps) {
 
         {/* Wishlist Button */}
         <Button variant="outline" className="w-full" size="lg">
-          <svg
-            className="mr-2 h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-            />
-          </svg>
+          <Heart className="mr-2 h-5 w-5" />
           Add to Wishlist
         </Button>
       </div>
 
       {/* Product Details Accordion */}
-      <div className="mt-8 border-t pt-8">
+      <div className="mt-8 border-t border-[var(--border)] pt-8">
         <details className="group">
           <summary className="flex cursor-pointer items-center justify-between py-3 text-sm font-medium">
             Description
-            <svg
-              className="h-5 w-5 transition-transform group-open:rotate-180"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-            </svg>
+            <ChevronDown className="h-5 w-5 transition-transform group-open:rotate-180" />
           </summary>
           <div
-            className="pb-4 text-sm text-gray-600"
+            className="pb-4 text-sm text-[var(--muted)]"
             dangerouslySetInnerHTML={{ __html: product.description || 'No description available.' }}
           />
         </details>
 
         {product.sku && (
-          <details className="group border-t">
+          <details className="group border-t border-[var(--border)]">
             <summary className="flex cursor-pointer items-center justify-between py-3 text-sm font-medium">
               Details
-              <svg
-                className="h-5 w-5 transition-transform group-open:rotate-180"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-              </svg>
+              <ChevronDown className="h-5 w-5 transition-transform group-open:rotate-180" />
             </summary>
-            <div className="pb-4 text-sm text-gray-600">
+            <div className="pb-4 text-sm text-[var(--muted)]">
               <p>SKU: {product.sku}</p>
               {product.weight && <p>Weight: {product.weight}</p>}
               {product.dimensions.length && (
@@ -315,20 +284,12 @@ export function ProductInfo({ product, variations }: ProductInfoProps) {
           </details>
         )}
 
-        <details className="group border-t">
+        <details className="group border-t border-[var(--border)]">
           <summary className="flex cursor-pointer items-center justify-between py-3 text-sm font-medium">
             Shipping & Returns
-            <svg
-              className="h-5 w-5 transition-transform group-open:rotate-180"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-            </svg>
+            <ChevronDown className="h-5 w-5 transition-transform group-open:rotate-180" />
           </summary>
-          <div className="pb-4 text-sm text-gray-600">
+          <div className="pb-4 text-sm text-[var(--muted)]">
             <p>Free shipping on orders over $100.</p>
             <p className="mt-2">Free returns within 30 days.</p>
           </div>

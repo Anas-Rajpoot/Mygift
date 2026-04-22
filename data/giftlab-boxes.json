@@ -1,0 +1,32 @@
+[
+  {
+    "id": "box-sm",
+    "name": "Small Box",
+    "size": "small",
+    "basePrice": 1200,
+    "maxItems": 4,
+    "dimensions": "20x20cm",
+    "weight": "200g",
+    "imageUrl": "",
+    "description": "Perfect for small gifts",
+    "isActive": true,
+    "sortOrder": 1,
+    "features": ["Ribbon included", "Message card"],
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "box-md",
+    "name": "Medium Box",
+    "size": "medium",
+    "basePrice": 1800,
+    "maxItems": 8,
+    "dimensions": "30x30cm",
+    "weight": "400g",
+    "imageUrl": "",
+    "description": "Our most popular size",
+    "isActive": true,
+    "sortOrder": 2,
+    "features": ["Premium ribbon", "Message card", "Tissue paper"],
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  }
+]

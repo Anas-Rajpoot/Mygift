@@ -3,16 +3,19 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 export interface CartItem {
   id: string; // Unique cart item ID (productId-variationId-attributes)
-  productId: number;
+  productId?: number;
   variationId?: number;
   name: string;
-  slug: string;
+  slug?: string;
   price: number;
   regularPrice?: number;
   quantity: number;
-  image: string;
+  image?: string;
   attributes?: Record<string, string>; // e.g., { Size: 'M', Color: 'Black' }
   maxQuantity?: number; // Stock limit
+  type?: 'product' | 'giftlab' | 'diaspora';
+  giftlabData?: unknown;
+  diasporaData?: unknown;
 }
 
 interface CartState {
@@ -21,7 +24,7 @@ interface CartState {
 }
 
 interface CartActions {
-  addItem: (item: Omit<CartItem, 'id'>) => void;
+  addItem: (item: Omit<CartItem, 'id'> & { id?: string }) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
@@ -101,7 +104,7 @@ export const useCartStore = create<CartStore>()(
 
       // Actions
       addItem: (item) => {
-        const id = generateCartItemId(item.productId, item.variationId, item.attributes);
+        const id = item.id ?? generateCartItemId(item.productId ?? Date.now(), item.variationId, item.attributes);
 
         set((state) => {
           const existingItemIndex = state.items.findIndex((i) => i.id === id);

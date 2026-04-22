@@ -1,0 +1,52 @@
+[
+  {
+    "id": "nav-shop",
+    "label": "Shop",
+    "href": "/shop",
+    "hasDropdown": true,
+    "showInDesktop": true,
+    "showInMobile": true,
+    "isActive": true,
+    "sortOrder": 1
+  },
+  {
+    "id": "nav-occasions",
+    "label": "Occasions",
+    "href": "/occasions",
+    "hasDropdown": false,
+    "showInDesktop": true,
+    "showInMobile": true,
+    "isActive": true,
+    "sortOrder": 2
+  },
+  {
+    "id": "nav-giftlab",
+    "label": "GiftLab",
+    "href": "/giftlab",
+    "hasDropdown": false,
+    "showInDesktop": true,
+    "showInMobile": true,
+    "isActive": true,
+    "sortOrder": 3
+  },
+  {
+    "id": "nav-send-pk",
+    "label": "Send to Pakistan",
+    "href": "/send-to-pakistan",
+    "hasDropdown": false,
+    "showInDesktop": true,
+    "showInMobile": true,
+    "isActive": true,
+    "sortOrder": 4
+  },
+  {
+    "id": "nav-about",
+    "label": "About",
+    "href": "/about",
+    "hasDropdown": false,
+    "showInDesktop": true,
+    "showInMobile": true,
+    "isActive": true,
+    "sortOrder": 5
+  }
+]

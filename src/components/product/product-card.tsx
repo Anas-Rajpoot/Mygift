@@ -1,10 +1,13 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { ImageIcon } from 'lucide-react';
 import type { WCProduct } from '@/types/woocommerce';
 import { formatPrice, calculateDiscount, getProductUrl } from '@/lib/utils';
+import { QuickViewModal } from './quick-view-modal';
 
 interface ProductCardProps {
   product: WCProduct;
@@ -19,16 +22,20 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     ? calculateDiscount(product.regular_price, product.sale_price)
     : 0;
 
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.3 }}
       className="group"
     >
       <Link href={getProductUrl(product.slug)} className="block">
         {/* Image Container */}
-        <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
+        <div className="relative aspect-[3/4] overflow-hidden bg-[var(--surface)]">
           {mainImage ? (
             <>
               <Image
@@ -51,40 +58,42 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             </>
           ) : (
             <div className="flex h-full items-center justify-center">
-              <svg
-                className="h-12 w-12 text-gray-300"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                />
-              </svg>
+              <ImageIcon className="h-12 w-12 text-[var(--muted)]" strokeWidth={1} />
             </div>
           )}
 
           {/* Badges */}
           <div className="absolute left-2 top-2 flex flex-col gap-1">
             {product.on_sale && (
-              <span className="bg-black px-2 py-1 text-xs font-medium text-white">
+              <span className="bg-[var(--gold)] px-2 py-1 text-xs font-medium text-[var(--ink)] font-accent uppercase tracking-wider">
                 -{discountPercent}%
               </span>
             )}
             {product.featured && (
-              <span className="bg-white px-2 py-1 text-xs font-medium text-black">
+              <span className="border border-[var(--gold)] px-2 py-1 text-xs font-medium text-[var(--gold)] font-accent uppercase tracking-wider">
                 New
               </span>
             )}
           </div>
 
+          {/* Quick View (opens product page). Visible on desktop/tablet without needing hover. */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsQuickViewOpen(true);
+            }}
+            className="absolute right-2 top-2 z-10 hidden sm:flex items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[11px] font-accent uppercase tracking-[0.18em] text-[var(--cream)] transition-colors hover:border-[var(--gold)] hover:text-[var(--gold)]"
+            aria-label={`Quick view: ${product.name}`}
+          >
+            Quick View
+          </button>
+
           {/* Out of Stock Overlay */}
           {product.stock_status === 'outofstock' && (
-            <div className="absolute inset-0 flex items-center justify-center bg-white/80">
-              <span className="text-sm font-medium text-gray-600">Out of Stock</span>
+            <div className="absolute inset-0 flex items-center justify-center bg-[var(--ink)]/80">
+              <span className="text-sm font-medium text-[var(--muted)]">Out of Stock</span>
             </div>
           )}
 
@@ -92,7 +101,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           <div className="absolute bottom-0 left-0 right-0 translate-y-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hidden md:block">
             <button
               type="button"
-              className="w-full bg-black py-3 text-sm font-medium text-white hover:bg-gray-800"
+              className="w-full bg-[var(--gold)] py-3 text-sm font-medium text-[var(--ink)] hover:bg-[var(--gold-light)] font-accent uppercase tracking-wider"
               onClick={(e) => {
                 e.preventDefault();
                 // Navigate to product page for variant selection
@@ -106,13 +115,13 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 
         {/* Product Info */}
         <div className="mt-4 space-y-1">
-          <h3 className="text-sm font-medium text-gray-900 line-clamp-1">
+          <h3 className="text-sm font-medium text-[var(--cream)] line-clamp-1">
             {product.name}
           </h3>
 
           {/* Categories */}
           {product.categories.length > 0 && (
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-[var(--muted)]">
               {product.categories[0].name}
             </p>
           )}
@@ -121,10 +130,10 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           <div className="flex items-center gap-2">
             {product.on_sale ? (
               <>
-                <span className="text-sm font-medium text-red-600">
+                <span className="text-sm font-medium text-[var(--gold)]">
                   {formatPrice(product.sale_price)}
                 </span>
-                <span className="text-sm text-gray-400 line-through">
+                <span className="text-sm text-[var(--muted)] line-through">
                   {formatPrice(product.regular_price)}
                 </span>
               </>
@@ -144,13 +153,13 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
                 .map((color) => (
                   <span
                     key={color}
-                    className="h-3 w-3 rounded-full border border-gray-300"
+                    className="h-3 w-3 rounded-full border border-[var(--border)]"
                     style={{ backgroundColor: color.toLowerCase() }}
                     title={color}
                   />
                 ))}
               {(product.attributes.find((attr) => attr.name.toLowerCase() === 'color')?.options.length || 0) > 4 && (
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-[var(--muted)]">
                   +{(product.attributes.find((attr) => attr.name.toLowerCase() === 'color')?.options.length || 0) - 4}
                 </span>
               )}
@@ -158,6 +167,13 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           )}
         </div>
       </Link>
+
+      {/* Quick view popup */}
+      <QuickViewModal
+        open={isQuickViewOpen}
+        product={product}
+        onClose={() => setIsQuickViewOpen(false)}
+      />
     </motion.article>
   );
 }

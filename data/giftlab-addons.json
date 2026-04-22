@@ -1,0 +1,26 @@
+[
+  {
+    "id": "addon-card",
+    "name": "Greeting Card",
+    "price": 500,
+    "lucideIcon": "PackageOpen",
+    "description": "Premium greeting card with custom message.",
+    "imageUrl": "",
+    "isActive": true,
+    "sortOrder": 1,
+    "category": "card",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "addon-wrap",
+    "name": "Premium Wrapping",
+    "price": 800,
+    "lucideIcon": "Gift",
+    "description": "Luxury wrap and ribbon finish.",
+    "imageUrl": "",
+    "isActive": true,
+    "sortOrder": 2,
+    "category": "decoration",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  }
+]

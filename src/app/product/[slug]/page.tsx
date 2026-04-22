@@ -39,8 +39,13 @@ async function RelatedProducts({ product }: { product: Awaited<ReturnType<typeof
   if (relatedProducts.length === 0) return null;
 
   return (
-    <section className="mt-16 border-t pt-16">
-      <h2 className="mb-8 text-2xl font-light">You May Also Like</h2>
+    <section className="mt-16 border-t border-[var(--border)] pt-16">
+      <div className="mb-8 text-center">
+        <span className="font-accent text-[10px] uppercase tracking-[0.5em] text-[var(--gold)]">
+          Curated
+        </span>
+        <h2 className="mt-2 font-heading text-3xl font-light text-[var(--cream)]">You May Also Like</h2>
+      </div>
       <ProductGrid products={relatedProducts} columns={4} />
     </section>
   );
@@ -62,14 +67,10 @@ async function ProductDetail({ slug }: { slug: string }) {
   return (
     <>
       <div className="lg:grid lg:grid-cols-2 lg:gap-12">
-        {/* Product Gallery */}
         <ProductGallery images={product.images} productName={product.name} />
-
-        {/* Product Info */}
         <ProductInfo product={product} variations={variations} />
       </div>
 
-      {/* Related Products */}
       <Suspense fallback={null}>
         <RelatedProducts product={product} />
       </Suspense>

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "promo-eid",
+    "code": "EID2025",
+    "type": "percent",
+    "value": 20,
+    "minOrderAmount": 3000,
+    "maxUses": 500,
+    "usedCount": 0,
+    "isActive": true,
+    "startDate": "2026-01-01",
+    "expiryDate": "2026-12-31",
+    "description": "Seasonal Eid discount",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  }
+]

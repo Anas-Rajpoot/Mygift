@@ -1,0 +1,18 @@
+[
+  {
+    "id": "birthday",
+    "slug": "birthday",
+    "name": "Birthday",
+    "lucideIcon": "Cake",
+    "glowColor": "#c4687a",
+    "accentColor": "#c9a84c",
+    "categorySlug": "flowers-cakes",
+    "description": "Celebrate birthdays with curated surprises.",
+    "bannerImageUrl": "",
+    "isActive": true,
+    "sortOrder": 1,
+    "seoTitle": "Birthday Gifts | MyGift.pk",
+    "seoDescription": "Find birthday gifts and flower cakes for loved ones.",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  }
+]

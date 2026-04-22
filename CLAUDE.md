@@ -1,163 +1,81 @@
-# CLAUDE.md - Project Overview
+# CLAUDE.md
 
-This file provides essential context for AI assistants working on this codebase.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Summary
+## Project Overview
 
-A **headless WordPress e-commerce frontend** built with Next.js 16, React 19, and Tailwind CSS v4. It connects to WordPress/WooCommerce via GraphQL and REST APIs to deliver a modern, fast shopping experience.
+**MyGift.pk** — a luxury Pakistani e-commerce brand (mygift.pk) based in Multan. Headless Next.js 16 (App Router) + React 19 + Tailwind CSS v4 + TypeScript 5 (strict) frontend connected to WordPress/WooCommerce via GraphQL and REST APIs.
 
-## Tech Stack
+## Brand Identity
 
-| Category | Technology |
-|----------|------------|
-| Framework | Next.js 16.1.6 (App Router) |
-| UI Library | React 19.2.3 |
-| Styling | Tailwind CSS v4 |
-| State Management | Zustand 5.0.11 |
-| Forms | React Hook Form 7.71 + Zod 4.3 |
-| Animation | Framer Motion 12.31 |
-| Language | TypeScript 5 (strict mode) |
+**MyGift.pk** sells across 5 categories: Gifts & Hampers, Clothing & Fashion, Watches & Accessories, Digital Products, Flowers & Cakes. Key differentiator: overseas Pakistani diaspora can order in their currency (USD/GBP/AED) and we deliver to their family in Pakistan.
 
-## Directory Structure
+### Design Direction: LUXURY PREMIUM DARK
+- Dark backgrounds only (no white pages) — `--ink: #0f0608`, `--surface: #1a0c10`
+- Gold as the ONLY accent — `--gold: #c9a84c`, used sparingly for maximum impact
+- Fonts: Cormorant Garamond (display/hero), Cinzel (labels/nav caps), DM Sans (body/UI)
+- NO rounded corners above 8px, NO drop shadows, NO gradients except dark-to-darker
+- Borders: 1px gold at low opacity (`rgba(201,168,76,0.15)`)
+- Icons: Lucide React only (no emoji in UI)
+- Hover states always involve gold
 
-```
-src/
-├── app/                    # Next.js App Router pages
-│   ├── api/               # API routes (auth, orders, account)
-│   ├── account/           # User account pages
-│   ├── product/[slug]/    # Product detail pages
-│   ├── shop/              # Product listing pages
-│   ├── cart/              # Shopping cart
-│   ├── checkout/          # Checkout flow
-│   └── layout.tsx         # Root layout with providers
-├── components/
-│   ├── layout/            # Header, Footer, Navigation
-│   ├── product/           # ProductCard, ProductGrid, ProductGallery
-│   ├── cart/              # CartDrawer
-│   ├── home/              # HeroSlider
-│   └── ui/                # Button, Input, Skeleton (reusable)
-├── lib/
-│   ├── graphql.ts         # GraphQL client for WordPress content
-│   ├── woocommerce.ts     # WooCommerce REST API client
-│   ├── auth.ts            # JWT authentication utilities
-│   └── utils.ts           # Helper functions (cn, formatPrice, etc.)
-├── stores/
-│   ├── cart-store.ts      # Shopping cart state (persisted)
-│   ├── auth-store.ts      # User authentication state
-│   └── ui-store.ts        # UI state (modals, menus)
-└── types/
-    └── woocommerce.ts     # TypeScript types for WC API
-```
-
-## Key Patterns & Conventions
-
-### Component Patterns
-- **Server Components** (default): Pages and layouts for SSR
-- **Client Components**: Mark with `'use client'` for interactivity
-- Use **Suspense** with loading states for async operations
-- Use `notFound()` for missing resources
-
-### Naming Conventions
-- Components: `PascalCase` (ProductCard.tsx)
-- Utilities: `camelCase` (formatPrice, cn)
-- Hooks: `useCamelCase` (useCartStore)
-- Types: `PascalCase` (WCProduct, CartState)
-
-### Styling
-- Use Tailwind CSS utility classes
-- Combine classes with `cn()` utility from `@/lib/utils`
-- Fonts: Inter (body), Syne (headings)
-- Color scheme: Minimal black/white/gray palette
-
-### State Management
-```typescript
-// Zustand stores with selectors to prevent re-renders
-import { useCartItems, useCartTotal } from '@/stores/cart-store'
-
-// Use specific selectors instead of full store
-const items = useCartItems()
-const total = useCartTotal()
-```
-
-### API Integration
-
-**GraphQL** (content queries):
-```typescript
-import { graphqlFetch, getPageBySlug } from '@/lib/graphql'
-```
-
-**WooCommerce REST** (e-commerce):
-```typescript
-import { productsApi, ordersApi, customersApi } from '@/lib/woocommerce'
-```
-
-**Authentication**:
-```typescript
-import { login, validateToken, getCurrentUser } from '@/lib/auth'
-```
-
-## Common Commands
+## Commands
 
 ```bash
-npm run dev      # Start development server (localhost:3000)
-npm run build    # Build for production
+npm run dev      # Dev server on localhost:3000
+npm run build    # Production build (also serves as type-check)
+npm run lint     # ESLint
 npm run start    # Start production server
-npm run lint     # Run ESLint
 ```
+
+No test runner. Verify with `npm run build` and `npm run lint`.
+
+## Architecture
+
+### Dual API Pattern
+- **GraphQL** (`src/lib/graphql.ts`): WordPress content — pages, menus, site settings. Uses `graphqlFetch()` with Next.js revalidation.
+- **WooCommerce REST** (`src/lib/woocommerce.ts`): Products, orders, categories, customers. Exports `products`, `categories`, `orders`, `customers` objects. Basic Auth with server-side secrets.
+- **Auth** (`src/lib/auth.ts`): JWT via `wp-json/jwt-auth/v1/token`.
+
+### Server vs Client Components
+- Pages/layouts: server components (can `await` data directly)
+- Interactive components: `'use client'` directive
+- Sensitive API calls: through `src/app/api/` routes
+
+### State Management (Zustand)
+- `cart-store.ts` — cart items, totals (localStorage persisted)
+- `auth-store.ts` — JWT token, user info (localStorage persisted)
+- `ui-store.ts` — modals, mobile menu, cart drawer
+- **Always use selector hooks** (e.g., `useCartItems()`) not full store
+
+### CSS Variables & Theme
+All design tokens defined in `globals.css` as CSS custom properties:
+- Colors: `--ink`, `--surface`, `--surface-2`, `--wine`, `--gold`, `--gold-light`, `--cream`, `--muted`, `--rose`, `--border`, `--border-hover`
+- Font families: `--font-sans` (DM Sans), `--font-heading` (Cormorant Garamond), `--font-accent` (Cinzel)
+
+### Animation Patterns (Framer Motion)
+- `fadeUp`: opacity 0->1, y 32->0, duration 0.7
+- `stagger`: staggerChildren 0.08
+- `scaleIn`: opacity 0->1, scale 0.94->1
+- Always use `whileInView` with `viewport={{ once: true, margin: "-80px" }}`
+
+## Key Conventions
+
+- Path alias: `@/` maps to `src/`
+- Styling: Tailwind utilities + `cn()` from `@/lib/utils`
+- Types: `src/types/woocommerce.ts` — extend, don't recreate
+- Images: Next.js `<Image>` with remote patterns in `next.config.ts`
+- UI components: `src/components/ui/` (Button, Input, Skeleton, SectionHeader)
+- Home sections: `src/components/home/` (hero, marquee, categories, occasions, diaspora, giftlab, trust-bar)
 
 ## Environment Variables
 
 Required in `.env.local`:
-```env
-NEXT_PUBLIC_WORDPRESS_URL=https://your-wp-site.com
-NEXT_PUBLIC_GRAPHQL_URL=https://your-wp-site.com/graphql
-WC_CONSUMER_KEY=ck_xxxxx        # Server-side only
-WC_CONSUMER_SECRET=cs_xxxxx    # Server-side only
-JWT_SECRET=your-secret-key
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
-
-## Important Files
-
-| File | Purpose |
-|------|---------|
-| `src/lib/utils.ts` | Core utilities (cn, formatPrice, slugify) |
-| `src/lib/woocommerce.ts` | WooCommerce API client |
-| `src/lib/graphql.ts` | GraphQL query functions |
-| `src/stores/cart-store.ts` | Cart state with localStorage persistence |
-| `src/types/woocommerce.ts` | All WooCommerce TypeScript types |
-| `src/components/providers.tsx` | Client-side provider setup |
-
-## Type Definitions
-
-Key types are in `src/types/woocommerce.ts`:
-- `WCProduct`, `WCProductVariation` - Product data
-- `WCCategory`, `WCTag` - Taxonomy
-- `WCOrder`, `WCLineItem` - Order data
-- `WCCustomer`, `WCAddress` - Customer data
-- `ProductsQueryParams` - Query filter types
-
-## Error Handling
-
-Custom error classes:
-- `GraphQLError` - GraphQL query failures
-- `WooCommerceError` - WC API errors (includes status code)
-- `AuthError` - Authentication failures
-
-Always wrap API calls in try-catch and provide user-friendly messages.
-
-## Performance Notes
-
-- Images: Use Next.js `<Image>` with remote patterns configured
-- Caching: GraphQL queries use revalidation (60-3600 seconds)
-- Bundle: Standalone output for Docker deployment
-- Client state: localStorage persistence for cart/auth
-
-## Docker Deployment
-
-```bash
-docker build -t headless-wp .
-docker run -p 3000:3000 --env-file .env headless-wp
+NEXT_PUBLIC_WORDPRESS_URL    # WordPress site URL
+NEXT_PUBLIC_GRAPHQL_URL      # WPGraphQL endpoint
+WC_CONSUMER_KEY              # Server-side only
+WC_CONSUMER_SECRET           # Server-side only
+JWT_SECRET                   # Must match wp-config.php
+NEXT_PUBLIC_SITE_URL         # Frontend URL
 ```
-
-Production builds use multi-stage Dockerfile optimized for Dokploy.

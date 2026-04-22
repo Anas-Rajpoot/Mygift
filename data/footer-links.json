@@ -1,0 +1,50 @@
+[
+  {
+    "id": "footer-shop-all",
+    "section": "shop",
+    "name": "All Products",
+    "href": "/shop",
+    "isActive": true,
+    "sortOrder": 1
+  },
+  {
+    "id": "footer-shop-delivery",
+    "section": "shop",
+    "name": "Delivery",
+    "href": "/delivery",
+    "isActive": true,
+    "sortOrder": 2
+  },
+  {
+    "id": "footer-shop-returns",
+    "section": "shop",
+    "name": "Returns",
+    "href": "/returns",
+    "isActive": true,
+    "sortOrder": 3
+  },
+  {
+    "id": "footer-company-about",
+    "section": "company",
+    "name": "About Us",
+    "href": "/about",
+    "isActive": true,
+    "sortOrder": 1
+  },
+  {
+    "id": "footer-company-privacy",
+    "section": "company",
+    "name": "Privacy Policy",
+    "href": "/privacy-policy",
+    "isActive": true,
+    "sortOrder": 2
+  },
+  {
+    "id": "footer-company-terms",
+    "section": "company",
+    "name": "Terms of Service",
+    "href": "/terms",
+    "isActive": true,
+    "sortOrder": 3
+  }
+]

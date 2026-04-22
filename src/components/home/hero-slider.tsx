@@ -1,205 +1,309 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import { useEffect, useMemo, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { PromoStrip } from '@/components/home/promo-strip';
 
-const slides = [
-  {
-    id: 1,
-    image: '/images/hero/hero-1.jpg',
-    title: 'New Collection',
-    subtitle: 'Spring/Summer 2025',
-    description: 'Discover the latest trends in contemporary fashion',
-    cta: 'Shop Now',
-    href: '/shop',
-    align: 'left' as const,
-  },
-  {
-    id: 2,
-    image: '/images/hero/hero-2.jpg',
-    title: 'Elevate Your Style',
-    subtitle: 'Premium Essentials',
-    description: 'Timeless pieces crafted for the modern wardrobe',
-    cta: 'Explore',
-    href: '/shop/men',
-    align: 'right' as const,
-  },
-];
+type HeroSlide = {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  primaryCta: { label: string; href: string };
+  backgroundImage?: { src: string; alt?: string };
+  imageOnly?: boolean;
+  objectFit?: 'cover' | 'contain';
+  objectPosition?: string;
+  overlayOpacity?: number;
+};
 
-export function HeroSlider() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, delay: i * 0.15, ease: [0.25, 0.4, 0.25, 1] as const },
+  }),
+};
 
-  const nextSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-  }, []);
+// (kept fadeUp staggered animations; no staggerChildren used currently)
 
-  const prevSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  }, []);
-
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-    setIsAutoPlaying(false);
-    // Resume auto-play after 10 seconds of inactivity
-    setTimeout(() => setIsAutoPlaying(true), 10000);
-  };
+export function HeroSlider({
+  slides,
+  promoItems,
+  secondaryCtaHref = '/send-to-pakistan',
+  secondaryCtaLabel = 'Send to Pakistan',
+}: {
+  slides: HeroSlide[];
+  promoItems?: string[];
+  secondaryCtaHref?: string;
+  secondaryCtaLabel?: string;
+}) {
+  const safeSlides = useMemo(() => (slides?.length ? slides : []), [slides]);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (safeSlides.length <= 1) return;
+    const t = window.setInterval(() => {
+      setActiveIndex((i) => (i + 1) % safeSlides.length);
+    }, 6500);
+    return () => window.clearInterval(t);
+  }, [safeSlides.length]);
 
-    const interval = setInterval(nextSlide, 6000);
-    return () => clearInterval(interval);
-  }, [isAutoPlaying, nextSlide]);
+  const active = safeSlides[activeIndex];
 
-  const slide = slides[currentSlide];
+  if (!active) {
+    return null;
+  }
+
+  const sectionClass = active.imageOnly
+    ? 'relative -mt-14 flex w-full flex-col overflow-hidden bg-[var(--ink)] min-h-[100dvh] lg:-mt-[104px]'
+    : 'relative -mt-14 flex min-h-screen flex-col overflow-hidden bg-[var(--ink)] lg:-mt-[104px]'
 
   return (
-    <section className="relative h-[70vh] min-h-[500px] lg:h-[85vh] lg:min-h-[600px] overflow-hidden bg-gray-100">
-      {/* Background Images */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={slide.id}
-          initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="absolute inset-0"
+    <section className={sectionClass}>
+      {!active.imageOnly && (
+        <div
+          className="absolute inset-0 opacity-40"
+          style={{
+            background:
+              'radial-gradient(ellipse at center, var(--wine) 0%, var(--ink) 70%)',
+          }}
+        />
+      )}
+
+      {!active.imageOnly && (
+        <svg
+          className="absolute inset-0 h-full w-full opacity-[0.06]"
+          viewBox="0 0 800 800"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <Image
-            src={slide.image}
-            alt={slide.title}
-            fill
-            priority
-            className="object-cover"
-            sizes="100vw"
-          />
-          {/* Overlay - darker gradient for better text visibility */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-        </motion.div>
-      </AnimatePresence>
+        {/* Diamond shape rotated 45deg */}
+        <rect
+          x="300"
+          y="300"
+          width="200"
+          height="200"
+          transform="rotate(45 400 400)"
+          stroke="var(--gold)"
+          strokeWidth="0.5"
+        />
+        <rect
+          x="340"
+          y="340"
+          width="120"
+          height="120"
+          transform="rotate(45 400 400)"
+          stroke="var(--gold)"
+          strokeWidth="0.5"
+        />
+        {/* Circle */}
+        <circle
+          cx="400"
+          cy="400"
+          r="180"
+          stroke="var(--gold)"
+          strokeWidth="0.5"
+        />
+        <circle
+          cx="400"
+          cy="400"
+          r="220"
+          stroke="var(--gold)"
+          strokeWidth="0.3"
+        />
+        {/* Crosshair lines */}
+        <line
+          x1="400"
+          y1="100"
+          x2="400"
+          y2="700"
+          stroke="var(--gold)"
+          strokeWidth="0.3"
+        />
+        <line
+          x1="100"
+          y1="400"
+          x2="700"
+          y2="400"
+          stroke="var(--gold)"
+          strokeWidth="0.3"
+        />
+        {/* Diagonal lines */}
+        <line
+          x1="200"
+          y1="200"
+          x2="600"
+          y2="600"
+          stroke="var(--gold)"
+          strokeWidth="0.3"
+        />
+        <line
+          x1="600"
+          y1="200"
+          x2="200"
+          y2="600"
+          stroke="var(--gold)"
+          strokeWidth="0.3"
+        />
+        </svg>
+      )}
 
-      {/* Content */}
-      <div className="relative h-full mx-auto max-w-7xl px-4 lg:px-8">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={slide.id}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -30 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className={`flex h-full items-center ${
-              slide.align === 'right' ? 'justify-end text-right' : 'justify-start text-left'
-            }`}
-          >
-            <div className="max-w-xl text-white relative">
-              {/* Text background for better readability */}
-              <div className="absolute -inset-6 lg:-inset-8 bg-gradient-to-r from-black/40 to-transparent rounded-lg backdrop-blur-[2px]" />
+      <div className="relative z-10 flex min-h-0 flex-1 flex-col">
+        {active.imageOnly ? (
+          <div className="relative h-full w-full">
+            {active.backgroundImage?.src ? (
+              <Link href={active.primaryCta.href} aria-label={active.primaryCta.label || 'Open'} className="absolute inset-0">
+                <Image
+                  src={active.backgroundImage.src}
+                  alt={active.backgroundImage.alt || 'Hero banner'}
+                  fill
+                  className={active.objectFit === 'contain' ? 'object-contain' : 'object-cover'}
+                  style={active.objectPosition ? { objectPosition: active.objectPosition } : undefined}
+                  sizes="100vw"
+                  priority
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{ background: `rgba(0,0,0,${Math.max(0, Math.min(40, Number(active.overlayOpacity ?? 12))) / 100})` }}
+                />
+                <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: 'inset 0 0 0 1px rgba(201,168,76,0.10)' }} />
+              </Link>
+            ) : null}
+            {safeSlides.length > 1 && (
+              <div className="absolute bottom-8 left-0 right-0 z-20 flex items-center justify-center gap-2">
+                {safeSlides.map((_, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setActiveIndex(idx)}
+                    className={`h-1.5 w-10 rounded-full transition-colors ${
+                      idx === activeIndex ? 'bg-[var(--gold)]' : 'bg-white/30'
+                    }`}
+                    aria-label={`Go to slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="flex flex-1 items-center justify-center px-4 pt-32 text-center sm:pt-36 md:pt-40 lg:pt-52 xl:pt-44">
+            <div className="mx-auto w-full max-w-4xl">
+              {/* Slide background image */}
+              {active.backgroundImage?.src && (
+                <div className="absolute inset-x-0 top-0 -z-10">
+                  <Image
+                    src={active.backgroundImage.src}
+                    alt={active.backgroundImage.alt || 'Hero background'}
+                    fill
+                    className={`${active.objectFit === 'contain' ? 'object-contain' : 'object-cover'} opacity-[0.18]`}
+                    style={active.objectPosition ? { objectPosition: active.objectPosition } : undefined}
+                    sizes="100vw"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-[var(--ink)]/40" />
+                </div>
+              )}
 
-              <div className="relative">
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                  className="text-sm font-medium uppercase tracking-[0.3em] text-white/90 drop-shadow-lg"
-                >
-                  {slide.subtitle}
-                </motion.p>
-                <motion.h1
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
-                  className="mt-4 font-heading text-4xl font-normal tracking-tight sm:text-5xl lg:text-6xl drop-shadow-xl [text-shadow:_0_4px_12px_rgb(0_0_0_/_40%)]"
-                >
-                  {slide.title}
-                </motion.h1>
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.5 }}
-                  className="mt-4 text-lg text-white/90 lg:text-xl drop-shadow-lg"
-                >
-                  {slide.description}
-                </motion.p>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeIndex}
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25 }}
+                className="flex flex-col items-center"
+              >
+                <div className="mb-6">
+                  <PromoStrip items={promoItems} />
+                </div>
+
+                {/* Eyebrow */}
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.6 }}
-                  className="mt-8"
+                  variants={fadeUp}
+                  custom={0}
+                  className="flex items-center gap-4"
                 >
-                  <Link href={slide.href}>
-                    <Button
-                      size="lg"
-                      className="bg-white text-black hover:bg-gray-100 px-8 py-6 text-sm uppercase tracking-wider shadow-xl"
-                    >
-                      {slide.cta}
-                    </Button>
+                  <span className="h-px w-8 bg-[var(--gold)]" />
+                  <span className="font-accent text-[10px] uppercase tracking-[0.5em] text-[var(--gold)]">
+                    {active.eyebrow}
+                  </span>
+                  <span className="h-px w-8 bg-[var(--gold)]" />
+                </motion.div>
+
+                {/* H1 */}
+                <motion.h1
+                  variants={fadeUp}
+                  custom={1}
+                  className="mt-8 font-heading text-5xl font-light leading-tight text-[var(--cream)] sm:text-6xl md:text-7xl lg:text-8xl"
+                >
+                  {active.title}
+                </motion.h1>
+
+                {/* Subtext */}
+                <motion.p
+                  variants={fadeUp}
+                  custom={2}
+                  className="mt-6 max-w-lg font-heading text-lg italic text-[var(--muted)] md:text-xl"
+                >
+                  {active.subtitle}
+                </motion.p>
+
+                {/* CTAs */}
+                <motion.div
+                  variants={fadeUp}
+                  custom={3}
+                  className="mt-10 flex flex-wrap items-center justify-center gap-4"
+                >
+                  <Link
+                    href={active.primaryCta.href}
+                    className="border border-[var(--gold)] bg-[var(--gold)] px-8 py-3 font-accent text-[11px] uppercase tracking-[0.2em] text-white transition-colors hover:bg-transparent hover:text-[var(--gold)]"
+                  >
+                    {active.primaryCta.label}
+                  </Link>
+
+                  <Link
+                    href={secondaryCtaHref}
+                    className="border border-[var(--border-hover)] px-8 py-3 font-accent text-[11px] uppercase tracking-[0.2em] text-[var(--cream)] transition-colors hover:border-[var(--gold)] hover:text-[var(--gold)]"
+                  >
+                    {secondaryCtaLabel}
                   </Link>
                 </motion.div>
-              </div>
+
+                {/* Dots */}
+                {safeSlides.length > 1 && (
+                  <div className="mt-8 flex items-center justify-center gap-2">
+                    {safeSlides.map((_, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setActiveIndex(idx)}
+                        className={`h-1.5 w-8 rounded-full transition-colors ${
+                          idx === activeIndex ? 'bg-[var(--gold)]' : 'bg-[var(--border)]'
+                        }`}
+                        aria-label={`Go to slide ${idx + 1}`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
             </div>
-          </motion.div>
-        </AnimatePresence>
-      </div>
+          </div>
+        )}
 
-      {/* Navigation Arrows */}
-      <button
-        onClick={() => {
-          prevSlide();
-          setIsAutoPlaying(false);
-          setTimeout(() => setIsAutoPlaying(true), 10000);
-        }}
-        className="absolute left-4 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center bg-white/10 backdrop-blur-sm text-white transition-colors hover:bg-white/20 lg:left-8"
-        aria-label="Previous slide"
-      >
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-        </svg>
-      </button>
-      <button
-        onClick={() => {
-          nextSlide();
-          setIsAutoPlaying(false);
-          setTimeout(() => setIsAutoPlaying(true), 10000);
-        }}
-        className="absolute right-4 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center bg-white/10 backdrop-blur-sm text-white transition-colors hover:bg-white/20 lg:right-8"
-        aria-label="Next slide"
-      >
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-        </svg>
-      </button>
-
-      {/* Dots Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => goToSlide(index)}
-            className={`h-2 transition-all duration-300 ${
-              index === currentSlide
-                ? 'w-8 bg-white'
-                : 'w-2 bg-white/50 hover:bg-white/70'
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
-      </div>
-
-      {/* Progress Bar */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
-        <motion.div
-          key={currentSlide}
-          initial={{ width: 0 }}
-          animate={{ width: '100%' }}
-          transition={{ duration: 6, ease: 'linear' }}
-          className="h-full bg-white"
-          style={{ display: isAutoPlaying ? 'block' : 'none' }}
-        />
+        {!active.imageOnly && (
+          <div className="flex shrink-0 flex-col items-center gap-3 pt-10 pb-6 max-xl:pt-14 max-xl:pb-8 xl:pt-12 xl:pb-10">
+            <span className="font-accent text-[11px] uppercase tracking-[0.35em] text-[var(--muted)]">
+              Scroll
+            </span>
+            <span className="relative h-8 w-px overflow-hidden bg-[var(--border)]">
+              <span className="absolute left-0 top-0 h-full w-full animate-scroll-line bg-[var(--gold)]" />
+            </span>
+          </div>
+        )}
       </div>
     </section>
   );

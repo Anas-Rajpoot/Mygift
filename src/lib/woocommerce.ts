@@ -30,6 +30,15 @@ class WooCommerceError extends Error {
   }
 }
 
+function extractApiError(data: unknown): { message?: string; code?: string } {
+  if (!data || typeof data !== 'object') return {};
+  const maybe = data as Record<string, unknown>;
+  return {
+    message: typeof maybe.message === 'string' ? maybe.message : undefined,
+    code: typeof maybe.code === 'string' ? maybe.code : undefined,
+  };
+}
+
 async function wooCommerceAPI<T>(
   endpoint: string,
   options: WooCommerceRequestOptions = {}
@@ -67,14 +76,39 @@ async function wooCommerceAPI<T>(
   });
 
   // Handle empty responses (like DELETE)
+  const contentType = response.headers.get('content-type') || '';
   const text = await response.text();
-  const data = text ? JSON.parse(text) : null;
+  let data: unknown = null;
+
+  if (text) {
+    if (contentType.includes('application/json')) {
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new WooCommerceError(
+          `WooCommerce API returned invalid JSON for ${endpoint}.`,
+          response.status || 502
+        );
+      }
+    } else {
+      const htmlLike = text.trim().startsWith('<');
+      const hint = htmlLike
+        ? 'Received HTML instead of JSON. Verify NEXT_PUBLIC_WORDPRESS_URL points to a WordPress site with WooCommerce REST API enabled.'
+        : 'Received non-JSON response.';
+
+      throw new WooCommerceError(
+        `WooCommerce API unexpected response for ${endpoint}. ${hint}`,
+        response.status || 502
+      );
+    }
+  }
 
   if (!response.ok) {
+    const apiError = extractApiError(data);
     throw new WooCommerceError(
-      data?.message || `WooCommerce API Error: ${response.status}`,
+      apiError.message || `WooCommerce API Error: ${response.status}`,
       response.status,
-      data?.code
+      apiError.code
     );
   }
 

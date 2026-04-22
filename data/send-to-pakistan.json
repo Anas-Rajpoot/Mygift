@@ -1,0 +1,21 @@
+[
+  {
+    "id": "main",
+    "heroTitle": "Send Love to Pakistan",
+    "heroSubtitle": "Handpicked gifts delivered nationwide for your family and friends.",
+    "heroCtaText": "Start Sending",
+    "heroBannerImageUrl": "",
+    "heroMobileBannerUrl": "",
+    "featuredCountries": [
+      { "name": "USA", "currency": "USD", "symbol": "$", "flagEmoji": "🇺🇸" },
+      { "name": "UK", "currency": "GBP", "symbol": "£", "flagEmoji": "🇬🇧" }
+    ],
+    "promoText": "International payment supported via cards and wallets.",
+    "promoImageUrl": "",
+    "seoTitle": "Send Gifts to Pakistan | MyGift.pk",
+    "seoDescription": "Quick gifting from abroad to Pakistan with trusted local delivery.",
+    "isActive": true,
+    "updatedAt": "2026-01-01T00:00:00.000Z",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  }
+]
