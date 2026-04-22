@@ -31,11 +31,11 @@ interface HeaderLinkItem {
 }
 
 const defaultNavLinks: HeaderLinkItem[] = [
-  { label: 'Shop', href: '/shop', hasDropdown: true },
-  { label: 'Occasions', href: '/occasions', hasDropdown: false },
-  { label: 'GiftLab', href: '/giftlab', hasDropdown: false },
-  { label: 'Send to Pakistan', href: '/send-to-pakistan', hasDropdown: false },
-  { label: 'About', href: '/about', hasDropdown: false },
+  { id: 'shop', label: 'Shop', href: '/shop', hasDropdown: true },
+  { id: 'occasions', label: 'Occasions', href: '/occasions', hasDropdown: false },
+  { id: 'giftlab', label: 'GiftLab', href: '/giftlab', hasDropdown: false },
+  { id: 'send-to-pakistan', label: 'Send to Pakistan', href: '/send-to-pakistan', hasDropdown: false },
+  { id: 'about', label: 'About', href: '/about', hasDropdown: false },
 ];
 
 export function Header() {
