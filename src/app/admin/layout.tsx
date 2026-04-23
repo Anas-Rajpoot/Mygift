@@ -61,7 +61,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <p className="font-cinzel text-base text-[#c9a84c]">MyGift.pk</p>
           <p className="font-lufga text-[11px] font-light text-[rgba(253,244,232,0.5)]">Admin Panel</p>
         </div>
-        <nav className="py-3">
+        <nav className="overflow-y-auto py-3" style={{ maxHeight: 'calc(100vh - 180px)' }}>
           {navItems.map((item) => {
             const Icon = item.icon
             const active = item.href.includes('?tab=')
