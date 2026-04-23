@@ -50,6 +50,11 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      {
+        // MyGift production domain
+        protocol: 'https',
+        hostname: 'mygift.pk',
+      },
     ],
     // Image formats to use
     formats: ['image/avif', 'image/webp'],
