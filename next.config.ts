@@ -16,29 +16,9 @@ const nextConfig: NextConfig = {
         hostname: '**.wordpress.com',
       },
       {
-        // Your WordPress CMS domain
+        // MyGift production domain
         protocol: 'https',
-        hostname: 'cms.msrbuilds.com',
-      },
-      {
-        // Wildcard for msrbuilds subdomains
-        protocol: 'https',
-        hostname: '**.msrbuilds.com',
-      },
-      {
-        // Current WordPress domain
-        protocol: 'https',
-        hostname: 'anas.inflowcommerce.com',
-      },
-      {
-        // Wildcard for inflowcommerce subdomains
-        protocol: 'https',
-        hostname: '**.inflowcommerce.com',
-      },
-      {
-        // ZipWP staging domains
-        protocol: 'https',
-        hostname: '**.zipwp.top',
+        hostname: 'mygift.pk',
       },
       {
         // For local development
