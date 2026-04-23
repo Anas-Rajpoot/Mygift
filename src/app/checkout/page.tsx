@@ -87,6 +87,16 @@ export default function CheckoutPage() {
   const shippingSameAsBilling = watch('shippingSameAsBilling');
   const createAccount = watch('createAccount');
 
+  // Check if cart has Send to Pakistan (diaspora) items
+  const hasDiasporaItems = items.some(item => item.type === 'diaspora');
+  const diasporaItems = items.filter(item => item.type === 'diaspora');
+  const diasporaDeliveryDates = diasporaItems
+    .map(item => {
+      const data = item.diasporaData as any;
+      return data?.recipient?.deliveryDate;
+    })
+    .filter(Boolean);
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -245,11 +255,17 @@ export default function CheckoutPage() {
         allFeeLines.push({ name: 'Tax', total: tax.toFixed(2) })
       }
 
-      const shippingLine = {
-        method_id: deliveryMethod,
-        method_title: deliveryMethod === 'same_day' ? 'Same-day delivery' : deliveryMethod === 'next_day' ? 'Next-day delivery' : 'Standard delivery',
-        total: shippingCost.toFixed(2),
-      }
+      const shippingLine = hasDiasporaItems 
+        ? {
+            method_id: 'diaspora-delivery',
+            method_title: 'Send to Pakistan Delivery',
+            total: '299',
+          }
+        : {
+            method_id: deliveryMethod,
+            method_title: deliveryMethod === 'same_day' ? 'Same-day delivery' : deliveryMethod === 'next_day' ? 'Next-day delivery' : 'Standard delivery',
+            total: shippingCost.toFixed(2),
+          }
 
       const response = await fetch('/api/orders', {
         method: 'POST',
@@ -496,35 +512,63 @@ export default function CheckoutPage() {
           <section className="mt-10 border-t border-[var(--border)] pt-8">
             <h2 className="font-heading text-xl text-[var(--cream)]">Delivery</h2>
             <p className="mt-1 text-sm text-[var(--muted)]">
-              Select a delivery speed. Rates are shown from your site settings.
+              {hasDiasporaItems ? 'Send to Pakistan delivery dates' : 'Select a delivery speed. Rates are shown from your site settings.'}
             </p>
 
-            <div className="mt-4 grid gap-3">
-              {([
-                { id: 'standard', label: 'Standard', price: deliverySettings ? (shippingCost === 0 && deliveryMethod === 'standard' ? 0 : deliverySettings.defaultStandardPrice) : 0 },
-                { id: 'next_day', label: 'Next-day', price: deliverySettings?.defaultNextDayPrice ?? 0 },
-                { id: 'same_day', label: 'Same-day', price: deliverySettings?.defaultSameDayPrice ?? 0 },
-              ] as const).map((m) => (
-                <button
-                  key={m.id}
-                  type="button"
-                  onClick={() => setDeliveryMethod(m.id)}
-                  className={`flex items-center justify-between border px-4 py-3 text-left transition ${
-                    deliveryMethod === m.id ? 'border-[var(--gold)] bg-[rgba(201,168,76,0.08)]' : 'border-[var(--border)] hover:border-[var(--border-hover)]'
-                  }`}
-                >
-                  <div>
-                    <p className="text-sm font-medium text-[var(--cream)]">{m.label}</p>
-                    {m.id === 'standard' && deliverySettings?.freeDeliveryThreshold ? (
-                      <p className="mt-0.5 text-xs text-[var(--muted)]">
-                        Free standard delivery over {formatPrice(deliverySettings.freeDeliveryThreshold)}
+            {hasDiasporaItems ? (
+              // Show diaspora delivery dates
+              <div className="mt-4 space-y-3">
+                {diasporaItems.map((item, idx) => {
+                  const data = item.diasporaData as any;
+                  const date = data?.recipient?.deliveryDate;
+                  const recipient = data?.recipient;
+                  const dateObj = date ? new Date(date) : null;
+                  const formattedDate = dateObj ? dateObj.toLocaleDateString('en-PK', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Not specified';
+                  
+                  return (
+                    <div key={idx} className="border border-[var(--border)] bg-[rgba(201,168,76,0.04)] px-4 py-3 rounded">
+                      <p className="text-sm font-medium text-[var(--cream)]">
+                        {recipient?.name || 'Gift'} → {recipient?.city || recipient?.otherCity}
                       </p>
-                    ) : null}
-                  </div>
-                  <p className="text-sm text-[var(--gold)]">{formatPrice(m.price)}</p>
-                </button>
-              ))}
-            </div>
+                      <p className="mt-1 text-xs text-[var(--muted)]">
+                        Delivery Date: <span className="text-[var(--gold)]">{formattedDate}</span>
+                      </p>
+                      <p className="mt-1 text-xs text-[var(--muted)]">
+                        Standard Delivery: <span className="text-[var(--gold)]">Rs 299</span>
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              // Show standard delivery options
+              <div className="mt-4 grid gap-3">
+                {([
+                  { id: 'standard', label: 'Standard', price: deliverySettings ? (shippingCost === 0 && deliveryMethod === 'standard' ? 0 : deliverySettings.defaultStandardPrice) : 0 },
+                  { id: 'next_day', label: 'Next-day', price: deliverySettings?.defaultNextDayPrice ?? 0 },
+                  { id: 'same_day', label: 'Same-day', price: deliverySettings?.defaultSameDayPrice ?? 0 },
+                ] as const).map((m) => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => setDeliveryMethod(m.id)}
+                    className={`flex items-center justify-between border px-4 py-3 text-left transition ${
+                      deliveryMethod === m.id ? 'border-[var(--gold)] bg-[rgba(201,168,76,0.08)]' : 'border-[var(--border)] hover:border-[var(--border-hover)]'
+                    }`}
+                  >
+                    <div>
+                      <p className="text-sm font-medium text-[var(--cream)]">{m.label}</p>
+                      {m.id === 'standard' && deliverySettings?.freeDeliveryThreshold ? (
+                        <p className="mt-0.5 text-xs text-[var(--muted)]">
+                          Free standard delivery over {formatPrice(deliverySettings.freeDeliveryThreshold)}
+                        </p>
+                      ) : null}
+                    </div>
+                    <p className="text-sm text-[var(--gold)]">{formatPrice(m.price)}</p>
+                  </button>
+                ))}
+              </div>
+            )}
 
             <h2 className="mt-10 font-heading text-xl text-[var(--cream)]">Payment</h2>
             <p className="mt-1 text-sm text-[var(--muted)]">Choose how you want to pay.</p>
