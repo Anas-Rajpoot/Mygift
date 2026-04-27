@@ -12,45 +12,49 @@ function generateOrderNumber(): string {
 
 export async function GET(req: NextRequest) {
   try {
-    const searchParams = req.nextUrl.searchParams
+    const { searchParams } = new URL(req.url)
     const status = searchParams.get('status')
     const type = searchParams.get('type')
-    const search = searchParams.get('search')?.toLowerCase()
-    const limit = parseInt(searchParams.get('limit') || '50')
-    const offset = parseInt(searchParams.get('offset') || '0')
-    
+    const search = searchParams.get('search')
+    const date = searchParams.get('date')
     let orders = readDb<Order>('orders')
-    
-    // Filter by status
-    if (status) {
+
+    if (status && status !== 'all') {
       orders = orders.filter(o => o.status === status)
     }
-    
-    // Filter by type
-    if (type) {
+    if (type && type !== 'all') {
       orders = orders.filter(o => o.type === type)
     }
-    
-    // Search by order number, customer name, or phone
     if (search) {
+      const q = search.toLowerCase()
       orders = orders.filter(o =>
-        o.orderNumber.toLowerCase().includes(search) ||
-        o.customer.name.toLowerCase().includes(search) ||
-        o.customer.phone.includes(search)
+        o.orderNumber.toLowerCase().includes(q) ||
+        o.customer.name.toLowerCase().includes(q) ||
+        o.customer.phone.includes(q) ||
+        o.diasporaData?.recipient?.name.toLowerCase().includes(q) ||
+        o.diasporaData?.recipient?.city.toLowerCase().includes(q)
       )
     }
-    
-    // Pagination
-    const total = orders.length
-    const paginated = orders.slice(offset, offset + limit)
-    
+    if (date === 'today') {
+      const today = new Date().toDateString()
+      orders = orders.filter(o => new Date(o.createdAt).toDateString() === today)
+    } else if (date === 'week') {
+      const now = Date.now()
+      orders = orders.filter(o => now - new Date(o.createdAt).getTime() <= 7 * 24 * 60 * 60 * 1000)
+    } else if (date === 'month') {
+      const now = Date.now()
+      orders = orders.filter(o => now - new Date(o.createdAt).getTime() <= 30 * 24 * 60 * 60 * 1000)
+    }
+
     return NextResponse.json({
-      orders: paginated,
-      total,
-      limit,
-      offset
+      orders,
+      total: orders.length,
+      pendingCount: orders.filter(o => o.status === 'pending').length,
+      codPending: orders.filter(o => o.paymentMethod === 'cod' && o.paymentStatus !== 'paid').length,
+      todayRevenue: orders
+        .filter(o => new Date(o.createdAt).toDateString() === new Date().toDateString())
+        .reduce((sum, o) => sum + o.total, 0),
     })
-    
   } catch (err) {
     console.error('Orders fetch error:', err)
     return NextResponse.json({ error: 'Failed to fetch orders' }, { status: 500 })
@@ -109,7 +113,7 @@ export async function POST(req: NextRequest) {
         email: body.billing?.email || '',
         phone: body.billing?.phone || '',
         country: body.billing?.country || 'PK',
-        ip: req.ip || 'unknown',
+        ip: req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown',
       },
       subtotal,
       deliveryPrice: shippingCost,
@@ -129,7 +133,8 @@ export async function POST(req: NextRequest) {
           updatedBy: 'customer',
         },
       ],
-      type: 'standard',
+      customerNote: '',
+      adminNote: '',
       items,
       deliveryAddress: {
         name: body.shipping?.first_name ? `${body.shipping.first_name} ${body.shipping.last_name || ''}`.trim() : body.billing?.first_name ? `${body.billing.first_name} ${body.billing.last_name || ''}`.trim() : '',
