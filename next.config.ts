@@ -1,5 +1,21 @@
 import type { NextConfig } from "next";
 
+function hostPatternFromUrl(rawUrl?: string) {
+  if (!rawUrl) return null;
+  try {
+    const parsed = new URL(rawUrl);
+    return {
+      protocol: parsed.protocol.replace(':', '') as 'http' | 'https',
+      hostname: parsed.hostname,
+    };
+  } catch {
+    return null;
+  }
+}
+
+const wpHostPattern = hostPatternFromUrl(process.env.NEXT_PUBLIC_WORDPRESS_URL);
+const graphqlHostPattern = hostPatternFromUrl(process.env.NEXT_PUBLIC_GRAPHQL_URL);
+
 const nextConfig: NextConfig = {
   // Output standalone build for Docker deployment
   output: 'standalone',
@@ -7,6 +23,8 @@ const nextConfig: NextConfig = {
   // Enable image optimization for WordPress images
   images: {
     remotePatterns: [
+      ...(wpHostPattern ? [wpHostPattern] : []),
+      ...(graphqlHostPattern ? [graphqlHostPattern] : []),
       {
         protocol: 'https',
         hostname: '**.wp.com',
@@ -21,6 +39,11 @@ const nextConfig: NextConfig = {
         hostname: 'mygift.pk',
       },
       {
+        // Backend WordPress host wildcard (headless setup)
+        protocol: 'https',
+        hostname: '**.inflowcommerce.com',
+      },
+      {
         // For local development
         protocol: 'http',
         hostname: 'localhost',
@@ -31,9 +54,9 @@ const nextConfig: NextConfig = {
         hostname: 'images.unsplash.com',
       },
       {
-        // MyGift production domain
+        // WWW host
         protocol: 'https',
-        hostname: 'mygift.pk',
+        hostname: 'www.mygift.pk',
       },
     ],
     // Image formats to use
