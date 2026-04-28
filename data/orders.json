@@ -1,0 +1,102 @@
+[
+  {
+    "id": "mocm0m3rgeay7gnto9i",
+    "orderNumber": "MGP-2026-0002",
+    "type": "giftlab",
+    "customer": {
+      "name": "Anas ",
+      "email": "chh075520@gmail.com",
+      "phone": "234567",
+      "country": "PK"
+    },
+    "deliveryAddress": {
+      "name": "Anas ",
+      "phone": "234567",
+      "address": "muzaffargrah",
+      "city": "multan",
+      "province": "Punjab",
+      "country": "PK"
+    },
+    "subtotal": 19300,
+    "deliveryPrice": 299,
+    "discount": 0,
+    "promoCode": null,
+    "total": 19599,
+    "currency": "PKR",
+    "paymentMethod": "cod",
+    "paymentStatus": "pending",
+    "status": "pending",
+    "statusHistory": [
+      {
+        "status": "pending",
+        "timestamp": "2026-04-24T07:49:20.488Z",
+        "note": "Order placed",
+        "updatedBy": "system"
+      }
+    ],
+    "giftlabData": {
+      "occasion": "",
+      "box": null,
+      "items": [
+        {
+          "id": 1081,
+          "name": "Luxury Anniversary Gift Box – Complete Celebration Hamper for Her",
+          "price": 19300,
+          "imageUrl": "https://mygift.pk/wp-content/uploads/2025/10/anniversary-box-2.webp",
+          "quantity": 1
+        }
+      ],
+      "ribbon": "gold",
+      "message": "",
+      "senderName": "",
+      "cardDesign": "classic",
+      "addOns": [],
+      "delivery": "same-day",
+      "deliveryPrice": 299
+    },
+    "customerNote": "",
+    "adminNote": "",
+    "createdAt": "2026-04-24T07:49:20.488Z",
+    "updatedAt": "2026-04-24T07:49:20.488Z"
+  },
+  {
+    "id": "mobh40vr8sxswzs6yim",
+    "orderNumber": "MGP-2026-0001",
+    "type": "standard",
+    "customer": {
+      "name": "Ans Shafique",
+      "email": "anasrajpoot945@gmail.com",
+      "phone": "03146507519",
+      "country": "PK",
+      "ip": "unknown"
+    },
+    "subtotal": 0,
+    "deliveryPrice": 199,
+    "discount": 0,
+    "promoCode": null,
+    "total": 32598,
+    "currency": "PKR",
+    "paymentMethod": "cod",
+    "paymentStatus": "pending",
+    "status": "pending",
+    "statusHistory": [
+      {
+        "status": "pending",
+        "timestamp": "2026-04-23T12:44:15.351Z",
+        "note": "Order placed",
+        "updatedBy": "customer"
+      }
+    ],
+    "items": [],
+    "deliveryAddress": {
+      "name": "Ans Shafique",
+      "phone": "03146507519",
+      "address": "Tiba kareem abad street No. 01 Muzaffargarh",
+      "city": "MuzaffarGarh",
+      "province": "34200",
+      "country": "PK"
+    },
+    "createdAt": "2026-04-23T12:44:15.351Z",
+    "updatedAt": "2026-04-23T12:44:15.351Z"
+  }
+]

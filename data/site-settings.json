@@ -33,7 +33,7 @@
       "defaultNextDayPrice": 199,
       "defaultStandardPrice": 0,
       "codAvailable": true,
-      "codFee": 0
+      "codFee": 300
     },
     "tax": {
       "enabled": false,
@@ -41,7 +41,7 @@
       "applyToShipping": false
     },
     "maintenance": {
-      "maintenanceMode": true,
+      "maintenanceMode": false,
       "maintenanceMessage": "We are updating our store. Back soon!"
     },
     "homeLinks": {
@@ -70,7 +70,7 @@
       "paypalClientSecret": "",
       "wiseEmail": ""
     },
-    "updatedAt": "2026-04-22T07:03:48.169Z",
+    "updatedAt": "2026-04-23T12:59:51.538Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   }
 ]

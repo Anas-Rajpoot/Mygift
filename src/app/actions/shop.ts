@@ -1,4 +1,5 @@
 'use server'
+import { normalizeBaseUrl } from '@/lib/url'
 
 export interface ShopFilters {
   category?: string
@@ -15,7 +16,7 @@ export interface ShopFilters {
 
 export async function fetchShopProducts(filters: ShopFilters) {
   try {
-    const WC_URL = process.env.NEXT_PUBLIC_WC_URL ?? process.env.NEXT_PUBLIC_WORDPRESS_URL
+    const WC_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_WC_URL ?? process.env.NEXT_PUBLIC_WORDPRESS_URL)
     const WC_KEY = process.env.WC_CONSUMER_KEY
     const WC_SECRET = process.env.WC_CONSUMER_SECRET
     if (!WC_URL || !WC_KEY || !WC_SECRET) return { products: [], total: 0, totalPages: 0 }
@@ -64,7 +65,7 @@ export async function fetchShopProducts(filters: ShopFilters) {
 
 export async function fetchShopCategories() {
   try {
-    const WC_URL = process.env.NEXT_PUBLIC_WC_URL ?? process.env.NEXT_PUBLIC_WORDPRESS_URL
+    const WC_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_WC_URL ?? process.env.NEXT_PUBLIC_WORDPRESS_URL)
     const WC_KEY = process.env.WC_CONSUMER_KEY
     const WC_SECRET = process.env.WC_CONSUMER_SECRET
 
@@ -102,7 +103,7 @@ export async function fetchShopCategories() {
 
 export async function fetchPriceRange() {
   try {
-    const WC_URL = process.env.NEXT_PUBLIC_WC_URL ?? process.env.NEXT_PUBLIC_WORDPRESS_URL
+    const WC_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_WC_URL ?? process.env.NEXT_PUBLIC_WORDPRESS_URL)
     const WC_KEY = process.env.WC_CONSUMER_KEY
     const WC_SECRET = process.env.WC_CONSUMER_SECRET
     if (!WC_URL || !WC_KEY || !WC_SECRET) return { min: 0, max: 50000 }

@@ -1,7 +1,8 @@
 'use server'
+import { normalizeBaseUrl } from '@/lib/url'
 
 export async function fetchDiasporaProducts(categorySlug: string) {
-  const WC_URL = process.env.NEXT_PUBLIC_WC_URL ?? process.env.NEXT_PUBLIC_WORDPRESS_URL
+  const WC_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_WC_URL ?? process.env.NEXT_PUBLIC_WORDPRESS_URL)
   const WC_KEY = process.env.WC_CONSUMER_KEY
   const WC_SECRET = process.env.WC_CONSUMER_SECRET
   if (!WC_URL || !WC_KEY || !WC_SECRET) return { products: [], usedFallback: false }
@@ -40,7 +41,7 @@ export async function fetchDiasporaProducts(categorySlug: string) {
 }
 
 export async function fetchDiasporaCategories() {
-  const WC_URL = process.env.NEXT_PUBLIC_WC_URL ?? process.env.NEXT_PUBLIC_WORDPRESS_URL
+  const WC_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_WC_URL ?? process.env.NEXT_PUBLIC_WORDPRESS_URL)
   const WC_KEY = process.env.WC_CONSUMER_KEY
   const WC_SECRET = process.env.WC_CONSUMER_SECRET
   if (!WC_URL || !WC_KEY || !WC_SECRET) return []

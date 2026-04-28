@@ -1,4 +1,6 @@
-const GRAPHQL_URL = process.env.NEXT_PUBLIC_GRAPHQL_URL;
+import { normalizeBaseUrl } from '@/lib/url';
+
+const GRAPHQL_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_GRAPHQL_URL);
 
 interface GraphQLResponse<T> {
   data: T;

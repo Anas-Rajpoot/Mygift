@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import { validateToken, getCurrentUser, login } from '@/lib/auth';
+import { normalizeBaseUrl } from '@/lib/url';
 
 interface PasswordRequestBody {
   currentPassword: string;
   newPassword: string;
 }
 
-const WP_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL;
+const WP_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_WORDPRESS_URL);
 
 export async function PUT(request: Request) {
   try {

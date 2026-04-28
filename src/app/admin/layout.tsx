@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Calendar,
   CreditCard,
@@ -16,12 +16,14 @@ import {
   Package,
   Plus,
   Settings,
+  ShoppingBag,
   Star,
   Tag,
 } from 'lucide-react'
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/orders', label: 'Orders', icon: ShoppingBag },
   { href: '/admin/banners', label: 'Banners', icon: ImageIcon },
   { href: '/admin/home-image-banners', label: 'Home Image Banners', icon: ImageIcon },
   { href: '/admin/giftlab-boxes', label: 'GiftLab Boxes', icon: Package },
@@ -45,6 +47,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const router = useRouter()
+  const [pendingOrders, setPendingOrders] = useState(0)
 
   useEffect(() => {
     if (pathname === '/admin/login') return
@@ -52,14 +55,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (!auth) router.push('/admin/login')
   }, [pathname, router])
 
+  useEffect(() => {
+    fetch('/api/orders')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => setPendingOrders(Number(data?.pendingCount ?? 0)))
+      .catch(() => setPendingOrders(0))
+  }, [])
+
   if (pathname === '/admin/login') return <>{children}</>
 
   return (
-    <div className="flex min-h-[calc(100vh-56px)] bg-[#f8f6f0] lg:min-h-[calc(100vh-104px)]">
-      <aside className="fixed left-0 top-14 h-[calc(100vh-56px)] w-[240px] border-r border-[rgba(201,168,76,0.15)] bg-[#1a0c10] lg:top-[104px] lg:h-[calc(100vh-104px)]">
-        <div className="border-b border-[rgba(201,168,76,0.15)] p-5">
+    <div className="admin-layout flex min-h-[calc(100vh-56px)] bg-[#f8f6f0] lg:min-h-[calc(100vh-104px)]">
+      <aside className="admin-sidebar fixed left-0 top-14 h-[calc(100vh-56px)] w-[240px] border-r border-[#3a252c] bg-[#1a0c10] lg:top-[104px] lg:h-[calc(100vh-104px)]">
+        <div className="border-b border-[#3a252c] p-5">
           <p className="font-cinzel text-base text-[#c9a84c]">MyGift.pk</p>
-          <p className="font-lufga text-[11px] font-light text-[rgba(253,244,232,0.5)]">Admin Panel</p>
+          <p className="font-lufga text-[11px] font-light text-white">Admin Panel</p>
         </div>
         <nav className="overflow-y-auto py-3" style={{ maxHeight: 'calc(100vh - 180px)' }}>
           {navItems.map((item) => {
@@ -73,12 +83,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 href={item.href}
                 className={`flex items-center gap-2.5 px-5 py-3 text-sm ${
                   active
-                    ? 'border-l-2 border-[#c9a84c] bg-[rgba(201,168,76,0.12)] text-[#c9a84c]'
-                    : 'text-[rgba(253,244,232,0.5)] hover:bg-[rgba(201,168,76,0.06)] hover:text-[rgba(253,244,232,0.8)]'
+                    ? 'border-l-2 border-[#b8820a] bg-[#2a171d] !text-white'
+                    : '!text-white hover:bg-[#2a171d] hover:!text-white'
                 }`}
               >
                 <Icon size={16} />
                 <span className="font-lufga text-[13px]">{item.label}</span>
+                {item.href === '/admin/orders' && pendingOrders > 0 && (
+                  <span className="ml-auto grid h-4 min-w-4 place-items-center rounded-full bg-[#dc2626] px-1 text-[10px] text-white">
+                    {pendingOrders > 99 ? '99+' : pendingOrders}
+                  </span>
+                )}
               </Link>
             )
           })}

@@ -1,6 +1,7 @@
 import type { JWTAuthResponse, JWTErrorResponse } from '@/types/woocommerce';
+import { normalizeBaseUrl } from '@/lib/url';
 
-const WP_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL;
+const WP_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_WORDPRESS_URL);
 
 class AuthError extends Error {
   code: string;

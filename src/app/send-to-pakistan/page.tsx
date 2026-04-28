@@ -44,6 +44,8 @@ export default function SendToPakistanPage() {
   const [relOpen, setRelOpen] = useState(false)
   const [focus, setFocus] = useState({ name: false, phone: false, instructions: false })
   const [showCelebration, setShowCelebration] = useState(false)
+  const [submittingOrder, setSubmittingOrder] = useState(false)
+  const [buyerInfo, setBuyerInfo] = useState({ name: '', email: '', phone: '' })
   const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'paypal' | 'wise'>('stripe')
   const [paymentSettings, setPaymentSettings] = useState<{
     managePaymentsInAdmin: boolean
@@ -146,9 +148,110 @@ export default function SendToPakistanPage() {
     triggerConfetti()
   }
 
-  const handleProceedToCheckout = () => {
-    handleAddToCart()
-    router.push('/checkout')
+  const handlePlaceOrder = async () => {
+    if (!buyerInfo.name || !buyerInfo.phone) {
+      alert('Please enter buyer name and phone number')
+      return
+    }
+    const state = useDiasporaStore.getState()
+    const productPrice = Number(state.selectedProduct?.price ?? 0)
+    const packingPrice = state.selectedPacking?.price ?? 0
+    const deliveryPrice = 299
+    const subtotal = productPrice + packingPrice
+    const total = subtotal + deliveryPrice
+    const selectedPaymentMethod = paymentMethod === 'stripe' ? 'card' : paymentMethod
+    const payload = {
+      type: 'send-to-pakistan',
+      customer: {
+        name: buyerInfo.name,
+        email: buyerInfo.email || '',
+        phone: buyerInfo.phone,
+        country: 'OVERSEAS',
+      },
+      subtotal,
+      deliveryPrice,
+      discount: 0,
+      promoCode: null,
+      total,
+      paymentMethod: selectedPaymentMethod,
+      diasporaData: {
+        giftCategory: (state as unknown as { giftCategory?: string }).giftCategory ?? state.category ?? '',
+        product: state.selectedProduct
+          ? {
+              id: state.selectedProduct.id,
+              name: state.selectedProduct.name,
+              price: Number(state.selectedProduct.price),
+              imageUrl: (() => {
+                const img = state.selectedProduct?.images?.[0]
+                if (!img) return ''
+                if (typeof img === 'string') return img
+                if (typeof img === 'object' && 'src' in img) return img.src || ''
+                return ''
+              })(),
+            }
+          : null,
+        packing: state.selectedPacking
+          ? {
+              id: state.selectedPacking.id,
+              name: state.selectedPacking.name,
+              price: state.selectedPacking.price,
+            }
+          : null,
+        recipient: {
+          name: state.recipient?.name ?? '',
+          phone: state.recipient?.phone ?? '',
+          relation: state.recipient?.relation ?? '',
+          city: state.recipient?.city ?? state.recipient?.otherCity ?? '',
+          deliveryDate: state.recipient?.deliveryDate
+            ? new Date(state.recipient.deliveryDate).toISOString()
+            : null,
+          deliverySlot: state.recipient?.deliverySlot ?? 'same-day',
+          specialInstructions: state.recipient?.specialInstructions ?? '',
+        },
+        giftNote: {
+          message: state.giftNote?.message ?? '',
+          senderName: state.giftNote?.senderName ?? '',
+          cardDesign: state.giftNote?.cardDesign ?? 'classic',
+          waNotify: state.giftNote?.waNotify ?? false,
+          waNumber: state.giftNote?.waPhone ?? state.recipient?.phone ?? '',
+          photoUrl: state.giftNote?.photoUrl || null,
+        },
+        buyerCurrency: state.buyerCurrency ?? 'GBP',
+        exchangeRate: state.exchangeRate ?? 345,
+        foreignTotal:
+          typeof state.getForeignTotal === 'function'
+            ? state.getForeignTotal()
+            : total / (state.exchangeRate ?? 345),
+      },
+      customerNote: [
+        `Recipient: ${state.recipient?.name} (${state.recipient?.relation})`,
+        `City: ${state.recipient?.city || state.recipient?.otherCity}`,
+        `Phone: ${state.recipient?.phone}`,
+        state.giftNote?.message ? `Message: "${state.giftNote.message}"` : '',
+        state.recipient?.specialInstructions ? `Instructions: ${state.recipient.specialInstructions}` : '',
+      ]
+        .filter(Boolean)
+        .join(' | '),
+    }
+    console.log('[Diaspora Order Payload]', JSON.stringify(payload, null, 2))
+    setSubmittingOrder(true)
+    try {
+      const res = await fetch('/api/orders/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      const data = await res.json()
+      if (!data.success) throw new Error(data.error || 'Failed to create order')
+      setShowCelebration(true)
+      triggerConfetti()
+      reset()
+    } catch (err) {
+      console.error(err)
+      alert('Failed to place order. Please try again.')
+    } finally {
+      setSubmittingOrder(false)
+    }
   }
 
   return (
@@ -377,6 +480,26 @@ export default function SendToPakistanPage() {
                 <p className="font-cinzel text-[11px] tracking-[0.3em] text-[#c9a84c]">COMPLETE YOUR ORDER</p>
                 <p className="mt-3 text-4xl font-bold text-[#c9a84c]">Rs {total.toLocaleString('en-PK')}</p>
                 <p className="text-[#8a7060]">{symbol}{foreignTotal.toFixed(2)}</p>
+                <div className="mt-4 space-y-2">
+                  <input
+                    value={buyerInfo.name}
+                    onChange={(e) => setBuyerInfo((prev) => ({ ...prev, name: e.target.value }))}
+                    placeholder="Buyer full name"
+                    className="w-full border border-[#c9a84c]/20 bg-[#0f0608] p-3 text-sm"
+                  />
+                  <input
+                    value={buyerInfo.phone}
+                    onChange={(e) => setBuyerInfo((prev) => ({ ...prev, phone: e.target.value }))}
+                    placeholder="Buyer phone"
+                    className="w-full border border-[#c9a84c]/20 bg-[#0f0608] p-3 text-sm"
+                  />
+                  <input
+                    value={buyerInfo.email}
+                    onChange={(e) => setBuyerInfo((prev) => ({ ...prev, email: e.target.value }))}
+                    placeholder="Buyer email (optional)"
+                    className="w-full border border-[#c9a84c]/20 bg-[#0f0608] p-3 text-sm"
+                  />
+                </div>
                 {paymentSettings?.managePaymentsInAdmin && availablePaymentMethods.length > 0 ? (
                   <>
                     <div className="mt-4 space-y-2">
@@ -391,11 +514,15 @@ export default function SendToPakistanPage() {
                         </button>
                       ))}
                     </div>
-                    <button onClick={handleProceedToCheckout} className="mt-4 flex h-14 w-full items-center justify-center gap-2 bg-[#c9a84c] text-xs font-semibold tracking-[0.25em] text-[#0f0608]">
-                      <Lock size={14} />PROCEED TO CHECKOUT
+                    <button
+                      onClick={handlePlaceOrder}
+                      disabled={submittingOrder}
+                      className="mt-4 flex h-14 w-full items-center justify-center gap-2 bg-[#c9a84c] text-xs font-semibold tracking-[0.25em] text-[#0f0608] disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <Lock size={14} />{submittingOrder ? 'PLACING ORDER...' : 'PLACE ORDER'}
                     </button>
                     <p className="mt-2 text-center text-[11px] text-[#8a7060]">
-                      Payment will be completed securely at checkout.
+                      Order is saved instantly in admin.
                     </p>
                   </>
                 ) : (
@@ -403,8 +530,12 @@ export default function SendToPakistanPage() {
                     <div className="mt-4 border border-[#c9a84c]/20 bg-[#c9a84c]/[0.04] p-3 text-xs text-[#8a7060]">
                       Payments are handled by your WooCommerce gateways at checkout.
                     </div>
-                    <button onClick={handleProceedToCheckout} className="mt-4 flex h-14 w-full items-center justify-center gap-2 bg-[#c9a84c] text-xs font-semibold tracking-[0.25em] text-[#0f0608]">
-                      <Lock size={14} />ADD TO CART & CHECKOUT
+                    <button
+                      onClick={handlePlaceOrder}
+                      disabled={submittingOrder}
+                      className="mt-4 flex h-14 w-full items-center justify-center gap-2 bg-[#c9a84c] text-xs font-semibold tracking-[0.25em] text-[#0f0608] disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <Lock size={14} />{submittingOrder ? 'PLACING ORDER...' : 'PLACE ORDER'}
                     </button>
                   </>
                 )}

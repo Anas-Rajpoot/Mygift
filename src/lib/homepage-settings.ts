@@ -1,4 +1,6 @@
-const WP_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL;
+import { normalizeBaseUrl } from '@/lib/url';
+
+const WP_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_WORDPRESS_URL);
 
 export type HomeHeroSlideSetting = {
   eyebrow?: string;

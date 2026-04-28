@@ -1,7 +1,7 @@
 'use client'
 
 import { create } from 'zustand'
-import { ADD_ONS, BOX_OPTIONS, type BoxOption, type DeliverySpeed, type RibbonColor } from '@/types/giftlab'
+import { ADD_ONS, BOX_OPTIONS, type BoxOption, type CardDesign, type DeliverySpeed, type RibbonColor } from '@/types/giftlab'
 import { DELIVERY_OPTIONS } from '@/lib/categories'
 import type { Occasion } from '@/types/product'
 
@@ -19,6 +19,7 @@ interface GiftLabState {
   box: BoxOption | null
   selectedItems: GiftLabProduct[]
   ribbon: RibbonColor
+  cardDesign: CardDesign
   message: string
   senderName: string
   selectedAddOns: string[]
@@ -28,6 +29,7 @@ interface GiftLabState {
   setOccasion: (occasion: Occasion) => void
   setBox: (boxId: BoxOption['id']) => void
   setRibbon: (ribbon: RibbonColor) => void
+  setCardDesign: (cardDesign: CardDesign) => void
   setMessage: (message: string) => void
   setSenderName: (senderName: string) => void
   setDelivery: (delivery: DeliverySpeed) => void
@@ -49,6 +51,7 @@ const initialState = {
   box: null,
   selectedItems: [],
   ribbon: 'gold' as const,
+  cardDesign: 'classic' as const,
   message: '',
   senderName: '',
   selectedAddOns: [],
@@ -62,6 +65,7 @@ export const useGiftLabStore = create<GiftLabState>((set, get) => ({
   setOccasion: (occasion) => set({ occasion }),
   setBox: (boxId) => set({ box: BOX_OPTIONS.find((box) => box.id === boxId) ?? null }),
   setRibbon: (ribbon) => set({ ribbon }),
+  setCardDesign: (cardDesign) => set({ cardDesign }),
   setMessage: (message) => set({ message }),
   setSenderName: (senderName) => set({ senderName }),
   setDelivery: (delivery) => set({ delivery }),

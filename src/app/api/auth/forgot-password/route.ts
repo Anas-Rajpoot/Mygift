@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
+import { normalizeBaseUrl } from '@/lib/url';
 
-const WP_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL;
+const WP_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_WORDPRESS_URL);
 
 interface ForgotPasswordRequestBody {
   email: string;

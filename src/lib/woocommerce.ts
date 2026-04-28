@@ -8,8 +8,9 @@ import type {
   CreateCustomerData,
   ProductsQueryParams,
 } from '@/types/woocommerce';
+import { normalizeBaseUrl } from '@/lib/url';
 
-const WC_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL;
+const WC_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_WORDPRESS_URL);
 const WC_KEY = process.env.WC_CONSUMER_KEY;
 const WC_SECRET = process.env.WC_CONSUMER_SECRET;
 
